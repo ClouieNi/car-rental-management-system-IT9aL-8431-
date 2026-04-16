@@ -8,19 +8,58 @@
 </head>
 <body>
 
-<nav style="background-color: #2d2d2d; padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between;">
-    <a class="brand" href="{{ route('home') }}" style="color: #ffffff; font-size: 1.2rem; font-weight: 700; text-decoration: none;">&#128663; Cars ni Bai</a>
-    <ul style="list-style: none; display: flex; gap: 0.25rem; margin: 0; padding: 0;">
-        <li><a href="{{ route('home') }}"          style="color: #cccccc; text-decoration: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.92rem;" class="{{ request()->routeIs('home')      ? 'active' : '' }}">Home</a></li>
-        <li><a href="{{ route('cars.index') }}"    style="color: #cccccc; text-decoration: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.92rem;" class="{{ request()->routeIs('cars.*')    ? 'active' : '' }}">Cars</a></li>
-        <li><a href="{{ route('rentals.index') }}" style="color: #cccccc; text-decoration: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.92rem;" class="{{ request()->routeIs('rentals.*') ? 'active' : '' }}">Rentals</a></li>
-        <li><a href="{{ route('about') }}"         style="color: #cccccc; text-decoration: none; padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.92rem;" class="{{ request()->routeIs('about')     ? 'active' : '' }}">About</a></li>
-    </ul>
+<nav style="background-color: #2d2d2d;">
+    <div class="nav-container">
+        {{-- Brand on the LEFT --}}
+        <a href="/" class="nav-brand">🚗 Cars ni Bai</a>
+
+        {{-- All links pushed to the RIGHT --}}
+        <ul class="nav-links" style="margin-left: auto;">
+            <li><a href="{{ route('cars.index') }}" class="{{ request()->is('cars*') ? 'active' : '' }}">Cars</a></li>
+            <li><a href="{{ route('rentals.index') }}" class="{{ request()->is('rentals*') ? 'active' : '' }}">Rentals</a></li>
+            <li><a href="{{ route('about') }}" class="{{ request()->is('about') ? 'active' : '' }}">About</a></li>
+
+            @guest
+                <li style="color:#555; padding:0 4px;">|</li>
+                <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a></li>
+                <li><a href="{{ route('register') }}" class="{{ request()->is('register') ? 'active' : '' }}">Register</a></li>
+            @else
+                <li style="color:#555; padding:0 4px;">|</li>
+<li style="display:flex; align-items:center; padding: 0 6px;">
+    <span style="color:#ccc; font-size:0.9rem;">
+        @if(auth()->user()->role === 'admin')
+            <span style="color:#e74c3c; font-weight:600;">ADMIN</span>
+        @else
+            <span style="color:#3498db; font-weight:600;">USER</span>
+        @endif
+        - {{ auth()->user()->name }}
+    </span>
+</li>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline; margin:0;">
+                        @csrf
+                        <button type="submit" style="background:#c0392b; border:none; color:white; cursor:pointer; font-size:0.8rem; padding:4px 12px; border-radius:4px; font-weight:600;">
+                            Logout
+                        </button>
+                    </form>
+                </li>
+            @endguest
+        </ul>
+    </div>
 </nav>
 
 <style>
-    nav a:hover { background-color: #444444 !important; color: #ffffff !important; }
-    nav a.active { background-color: #555555 !important; color: #ffffff !important; }
+    .nav-links a {
+        color: rgba(255,255,255,0.75);
+        text-decoration: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+        display: inline-block;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.12) !important; color: #fff !important; }
+    .nav-links a.active { background: rgba(255,255,255,0.18) !important; color: #fff !important; font-weight: 600; }
 </style>
 
 <div class="container">
