@@ -8,13 +8,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
+            if (auth()->check()) {
+                return redirect()->route('customer.dashboard');
+            }
+            return redirect()->route('login');
+        }
         return $next($request);
     }
 }
