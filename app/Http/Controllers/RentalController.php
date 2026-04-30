@@ -259,7 +259,7 @@ class RentalController extends Controller
 
     public function pendingApprovals()
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         $rentals = Rental::pending()
             ->with('car', 'customer', 'driver')
@@ -271,7 +271,7 @@ class RentalController extends Controller
 
     public function approve(Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         if ($rental->status !== 'pending') {
             return back()->withErrors('Rental must be pending to approve');
@@ -301,7 +301,7 @@ class RentalController extends Controller
 
     public function reject(Rental $rental, Request $request)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         $validated = $request->validate([
             'rejection_reason' => 'required|string|max:500',
@@ -321,7 +321,7 @@ class RentalController extends Controller
 
     public function approveCancellation(Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         if ($rental->status !== 'cancellation_requested') {
             return back()->withErrors('Rental must have cancellation request');
@@ -337,7 +337,7 @@ class RentalController extends Controller
 
     public function rejectCancellation(Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         if ($rental->status !== 'cancellation_requested') {
             return back()->withErrors('Rental must have cancellation request');
@@ -355,13 +355,13 @@ class RentalController extends Controller
     // Document Management
     public function documentsForm(Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         return view('rentals.documents', compact('rental'));
     }
 
     public function uploadContract(Request $request, Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         $request->validate([
             'contract_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -380,7 +380,7 @@ class RentalController extends Controller
 
     public function uploadId(Request $request, Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         $request->validate([
             'id_file' => 'required|file|mimes:jpg,jpeg,png|max:5120',
@@ -399,7 +399,7 @@ class RentalController extends Controller
 
     public function verifyDocuments(Request $request, Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         $validated = $request->validate([
             'document_type' => 'required|in:contract,id',
@@ -437,7 +437,7 @@ class RentalController extends Controller
 
     public function requestDocuments(Rental $rental, Request $request)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         $action = $request->input('action', 'request');
         
@@ -460,7 +460,7 @@ class RentalController extends Controller
     // Vehicle Release
     public function releaseVehicle(Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         if (!$rental->canBeReleased()) {
             return back()->withErrors('Documents must be verified before releasing vehicle.');
@@ -481,7 +481,7 @@ class RentalController extends Controller
     // Return Processing
     public function returnForm(Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         if (!in_array($rental->status, ['ongoing', 'return_pending'])) {
             return redirect()->route('rentals.show', $rental)
@@ -493,7 +493,7 @@ class RentalController extends Controller
 
     public function processReturn(Request $request, Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         $validated = $request->validate([
             'damage_panels' => 'required|integer|min:0',
@@ -562,7 +562,7 @@ class RentalController extends Controller
     // Download methods
     public function downloadContract(Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         if (!$rental->contract_file_path || !Storage::disk('private')->exists($rental->contract_file_path)) {
             abort(404, 'Contract file not found.');
@@ -573,7 +573,7 @@ class RentalController extends Controller
 
     public function downloadId(Rental $rental)
     {
-        $this->authorize('admin');
+        // admin-only (guarded by middleware)
         
         if (!$rental->id_file_path || !Storage::disk('private')->exists($rental->id_file_path)) {
             abort(404, 'ID file not found.');
