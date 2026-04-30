@@ -14,6 +14,9 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
+    <!-- Flatpickr Date Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     
@@ -41,12 +44,9 @@
     <aside class="fixed inset-y-0 left-0 z-50 w-60 bg-dark-100 border-r border-gold/15 flex flex-col transition-transform duration-250 ease-in-out"
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
         <!-- Logo -->
-        <div class="p-5 pb-4 border-b border-white/5 flex items-center gap-3">
-            <div class="w-10 h-10 bg-gold rounded-md flex items-center justify-center text-xl flex-shrink-0">🚗</div>
-            <div>
-                <div class="font-display text-xl tracking-wider text-gold">Cars ni Bai</div>
-                <div class="text-[10px] text-gray-500 uppercase tracking-widest">Rental Management</div>
-            </div>
+        <div class="p-5 pb-4 border-b border-white/5">
+            <div class="font-display text-2xl tracking-wider text-gold">Cars ni Bai</div>
+            <div class="text-[10px] text-gray-500 uppercase tracking-widest">Rental Management</div>
         </div>
 
         <!-- Navigation -->
@@ -112,11 +112,8 @@
 
         <!-- User Card -->
         <div class="p-5 border-t border-white/5">
-            <div class="flex items-center gap-2.5 p-2.5 bg-dark-200 rounded-md border border-white/5">
-                <div class="w-8.5 h-8.5 bg-gold rounded-full flex items-center justify-center font-bold text-dark text-xs flex-shrink-0">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </div>
-                <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between p-2.5 bg-dark-200 rounded-md border border-white/5">
+                <div class="min-w-0">
                     <div class="text-[13px] font-semibold text-cream truncate">{{ auth()->user()->name }}</div>
                     <div class="text-[10px] text-gold uppercase tracking-wider">{{ auth()->user()->role }}</div>
                 </div>
@@ -202,6 +199,22 @@
         </main>
     </div>
 </div>
+
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.datepicker').forEach(function(el) {
+            flatpickr(el, {
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'M d, Y',
+                allowInput: true,
+                disableMobile: true,
+            });
+        });
+    });
+</script>
 
 @stack('scripts')
 </body>

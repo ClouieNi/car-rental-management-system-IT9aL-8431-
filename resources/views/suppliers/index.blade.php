@@ -8,10 +8,10 @@
 
 <div class="page-header">
     <h2>Suppliers</h2>
-    <a href="{{ route('suppliers.create') }}" class="btn btn-primary btn-sm">+ New Supplier</a>
+    <a href="{{ route('suppliers.create') }}" class="btn btn-gold btn-sm">+ New Supplier</a>
 </div>
 
-<div class="card">
+<div class="card" style="padding: 0;">
     <table>
         <thead>
             <tr>

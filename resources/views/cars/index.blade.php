@@ -1,12 +1,17 @@
 @extends('layouts.app')
+
+@section('title', 'Fleet Management')
+@section('page-title', 'Fleet Management')
+@section('breadcrumb', 'Manage your vehicle fleet')
+
 @section('content')
 <div class="page-header">
     <h2>Cars</h2>
     @if(auth()->check() && auth()->user()->role === 'admin')
-        <a href="{{ route('cars.create') }}" class="btn btn-primary btn-sm">+ Add Car</a>
+        <a href="{{ route('cars.create') }}" class="btn btn-gold btn-sm">+ Add Car</a>
     @endif
 </div>
-<div class="card">
+<div class="card" style="padding: 0;">
     <table>
         <thead>
             <tr>

@@ -1,13 +1,13 @@
 <div class="form-group">
-    <label>Supplier Name *</label>
+    <label class="form-label">Supplier Name *</label>
     <input type="text" name="name" value="{{ old('name', $supplier->name ?? '') }}" 
-           class="{{ $errors->has('name') ? 'is-invalid' : '' }}" required>
+           class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" required>
     @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
 <div class="form-group">
-    <label>Type *</label>
-    <select name="type" id="supplier-type" required>
+    <label class="form-label">Type *</label>
+    <select name="type" id="supplier-type" class="form-control" required>
         <option value="">-- Select Type --</option>
         <option value="company-owned" {{ old('type', $supplier->type ?? '') == 'company-owned' ? 'selected' : '' }}>
             Company Owned
@@ -20,39 +20,39 @@
 </div>
 
 <div class="form-group" id="commission-group">
-    <label>Commission Rate (%)</label>
+    <label class="form-label">Commission Rate (%)</label>
     <input type="number" name="commission_rate" step="0.01" min="0" max="100"
            value="{{ old('commission_rate', $supplier->commission_rate ?? '') }}"
-           class="{{ $errors->has('commission_rate') ? 'is-invalid' : '' }}"
+           class="form-control {{ $errors->has('commission_rate') ? 'is-invalid' : '' }}"
            placeholder="e.g., 15 for 15%">
     @error('commission_rate')<div class="invalid-feedback">{{ $message }}</div>@enderror
-    <small style="color: var(--text-muted);">Only applies to partner-owned vehicles</small>
+    <small style="color: var(--text-muted); margin-top: 4px; display: block;">Only applies to partner-owned vehicles</small>
 </div>
 
 <div class="form-row">
     <div class="form-group">
-        <label>Contact Person</label>
-        <input type="text" name="contact_person" value="{{ old('contact_person', $supplier->contact_person ?? '') }}">
+        <label class="form-label">Contact Person</label>
+        <input type="text" name="contact_person" class="form-control" value="{{ old('contact_person', $supplier->contact_person ?? '') }}">
     </div>
     <div class="form-group">
-        <label>Phone</label>
-        <input type="text" name="phone" value="{{ old('phone', $supplier->phone ?? '') }}">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" class="form-control" value="{{ old('phone', $supplier->phone ?? '') }}">
     </div>
 </div>
 
 <div class="form-group">
-    <label>Email</label>
-    <input type="email" name="email" value="{{ old('email', $supplier->email ?? '') }}">
+    <label class="form-label">Email</label>
+    <input type="email" name="email" class="form-control" value="{{ old('email', $supplier->email ?? '') }}">
 </div>
 
 <div class="form-group">
-    <label>Address</label>
-    <textarea name="address" rows="2">{{ old('address', $supplier->address ?? '') }}</textarea>
+    <label class="form-label">Address</label>
+    <textarea name="address" class="form-control" rows="2">{{ old('address', $supplier->address ?? '') }}</textarea>
 </div>
 
 <div class="form-group">
-    <label>Notes</label>
-    <textarea name="notes" rows="3">{{ old('notes', $supplier->notes ?? '') }}</textarea>
+    <label class="form-label">Notes</label>
+    <textarea name="notes" class="form-control" rows="3">{{ old('notes', $supplier->notes ?? '') }}</textarea>
 </div>
 
 <div class="form-group">

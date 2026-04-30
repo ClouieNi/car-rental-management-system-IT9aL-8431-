@@ -1,12 +1,17 @@
 @extends('layouts.app')
+
+@section('title', 'Rentals')
+@section('page-title', 'Rental Transactions')
+@section('breadcrumb', 'Manage all rental bookings')
+
 @section('content')
 <div class="page-header">
     <h2>Rentals</h2>
     @if(auth()->check() && auth()->user()->role === 'admin')
-        <a href="{{ route('rentals.create') }}" class="btn btn-success btn-sm">+ New Rental</a>
+        <a href="{{ route('rentals.create') }}" class="btn btn-gold btn-sm">+ New Rental</a>
     @endif
 </div>
-<div class="card">
+<div class="card" style="padding: 0;">
     <table>
         <thead>
             <tr>

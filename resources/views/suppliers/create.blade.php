@@ -12,7 +12,7 @@
         @include('suppliers._form')
         <div class="form-actions">
             <a href="{{ route('suppliers.index') }}" class="btn btn-secondary">Cancel</a>
-            <button type="submit" class="btn btn-primary">Create Supplier</button>
+            <button type="submit" class="btn btn-gold">Create Supplier</button>
         </div>
     </form>
 </div>
