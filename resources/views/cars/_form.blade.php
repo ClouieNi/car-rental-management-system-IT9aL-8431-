@@ -1,7 +1,21 @@
 <div class="form-group">
-    <label>Plate Number</label>
+    <label>Supplier *</label>
+    <select name="supplier_id" class="{{ $errors->has('supplier_id') ? 'is-invalid' : '' }}" required>
+        <option value="">-- Select Supplier --</option>
+        @foreach($suppliers ?? [] as $supplier)
+            <option value="{{ $supplier->id }}" {{ old('supplier_id', $car->supplier_id ?? '') == $supplier->id ? 'selected' : '' }}>
+                {{ $supplier->name }} @if($supplier->isCompanyOwned())(Company)@else(Partner)@endif
+            </option>
+        @endforeach
+    </select>
+    @error('supplier_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    <small style="color: var(--text-muted);"><a href="{{ route('suppliers.create') }}" target="_blank">+ Add new supplier</a></small>
+</div>
+
+<div class="form-group">
+    <label>Plate Number *</label>
     <input type="text" name="plate_number" class="{{ $errors->has('plate_number') ? 'is-invalid' : '' }}"
-           value="{{ old('plate_number', $car->plate_number ?? '') }}" placeholder="e.g. ABC 1234">
+           value="{{ old('plate_number', $car->plate_number ?? '') }}" placeholder="e.g. ABC 1234" required>
     @error('plate_number')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 <div class="form-row">

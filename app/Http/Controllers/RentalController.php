@@ -210,7 +210,7 @@ class RentalController extends Controller
 
     public function mastersheet(Request $request)
     {
-        $query = Rental::with('car')->orderByDesc('start_date');
+        $query = Rental::with(['car.supplier'])->orderByDesc('start_date');
 
         if ($request->filled('from')) {
             $query->whereDate('start_date', '>=', $request->from);
@@ -224,13 +224,361 @@ class RentalController extends Controller
 
         $rentals = $query->get();
 
+        // Calculate commission totals
+        $companyRevenue = 0;
+        $partnerRevenue = 0;
+        $totalCommission = 0;
+
+        foreach ($rentals as $rental) {
+            if ($rental->car && $rental->car->supplier) {
+                if ($rental->car->supplier->isPartnerOwned() && $rental->car->supplier->commission_rate) {
+                    $commission = $rental->car->supplier->calculateCommission($rental->total_cost);
+                    $partnerRevenue += $rental->total_cost;
+                    $totalCommission += $commission;
+                } else {
+                    $companyRevenue += $rental->total_cost;
+                }
+            } else {
+                $companyRevenue += $rental->total_cost;
+            }
+        }
+
         $totals = [
-            'total_cost'  => $rentals->sum('total_cost'),
-            'amount_paid' => $rentals->sum('amount_paid'),
-            'balance'     => $rentals->sum(fn($r) => $r->total_cost - $r->amount_paid),
-            'count'       => $rentals->count(),
+            'total_cost'       => $rentals->sum('total_cost'),
+            'amount_paid'      => $rentals->sum('amount_paid'),
+            'balance'          => $rentals->sum(fn($r) => $r->total_cost - $r->amount_paid),
+            'count'            => $rentals->count(),
+            'company_revenue'  => $companyRevenue,
+            'partner_revenue'  => $partnerRevenue,
+            'total_commission' => $totalCommission,
+            'net_revenue'      => $companyRevenue + ($partnerRevenue - $totalCommission),
         ];
 
         return view('rentals.mastersheet', compact('rentals', 'totals'));
+    }
+
+    public function pendingApprovals()
+    {
+        $this->authorize('admin');
+        
+        $rentals = Rental::pending()
+            ->with('car', 'customer', 'driver')
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+        
+        return view('admin.rentals.pending-approvals', ['rentals' => $rentals]);
+    }
+
+    public function approve(Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        if ($rental->status !== 'pending') {
+            return back()->withErrors('Rental must be pending to approve');
+        }
+
+        // Check no overbooking
+        $conflict = Rental::where('car_id', $rental->car_id)
+            ->where('id', '!=', $rental->id)
+            ->whereIn('status', ['reserved', 'approved', 'ongoing'])
+            ->where(function ($q) use ($rental) {
+                $q->whereBetween('start_date', [$rental->start_date, $rental->end_date])
+                  ->orWhereBetween('end_date', [$rental->start_date, $rental->end_date])
+                  ->orWhere(function ($q2) use ($rental) {
+                      $q2->where('start_date', '<=', $rental->start_date)
+                         ->where('end_date', '>=', $rental->end_date);
+                  });
+            })->exists();
+
+        if ($conflict) {
+            return back()->withErrors('Car has conflicting booking');
+        }
+
+        $rental->update(['status' => 'approved']);
+
+        return back()->with('success', 'Rental approved. Customer notified.');
+    }
+
+    public function reject(Rental $rental, Request $request)
+    {
+        $this->authorize('admin');
+        
+        $validated = $request->validate([
+            'rejection_reason' => 'required|string|max:500',
+        ]);
+
+        if ($rental->status !== 'pending') {
+            return back()->withErrors('Rental must be pending to reject');
+        }
+
+        $rental->update([
+            'status' => 'cancelled',
+            'admin_notes' => "Rejected: {$validated['rejection_reason']}",
+        ]);
+
+        return back()->with('success', 'Rental rejected.');
+    }
+
+    public function approveCancellation(Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        if ($rental->status !== 'cancellation_requested') {
+            return back()->withErrors('Rental must have cancellation request');
+        }
+
+        $rental->update([
+            'status' => 'cancelled',
+            'admin_notes' => "Cancellation approved. Refund: {$rental->refund_amount}",
+        ]);
+
+        return back()->with('success', 'Cancellation approved.');
+    }
+
+    public function rejectCancellation(Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        if ($rental->status !== 'cancellation_requested') {
+            return back()->withErrors('Rental must have cancellation request');
+        }
+
+        $rental->update([
+            'status' => 'approved',
+            'cancellation_requested_at' => null,
+            'cancellation_reason' => null,
+        ]);
+
+        return back()->with('success', 'Cancellation request denied.');
+    }
+
+    // Document Management
+    public function documentsForm(Rental $rental)
+    {
+        $this->authorize('admin');
+        return view('rentals.documents', compact('rental'));
+    }
+
+    public function uploadContract(Request $request, Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        $request->validate([
+            'contract_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        if ($request->hasFile('contract_file')) {
+            $path = $request->file('contract_file')->store("rentals/{$rental->id}/contract", 'private');
+            $rental->update([
+                'contract_file_path' => $path,
+                'contract_status' => 'uploaded',
+            ]);
+        }
+
+        return back()->with('success', 'Contract uploaded successfully.');
+    }
+
+    public function uploadId(Request $request, Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        $request->validate([
+            'id_file' => 'required|file|mimes:jpg,jpeg,png|max:5120',
+        ]);
+
+        if ($request->hasFile('id_file')) {
+            $path = $request->file('id_file')->store("rentals/{$rental->id}/id", 'private');
+            $rental->update([
+                'id_file_path' => $path,
+                'id_status' => 'uploaded',
+            ]);
+        }
+
+        return back()->with('success', 'ID uploaded successfully.');
+    }
+
+    public function verifyDocuments(Request $request, Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        $validated = $request->validate([
+            'document_type' => 'required|in:contract,id',
+            'action' => 'required|in:verify,reject',
+        ]);
+
+        $isVerify = $validated['action'] === 'verify';
+        $now = now();
+        $userId = auth()->id();
+
+        if ($validated['document_type'] === 'contract') {
+            $rental->update([
+                'contract_status' => $isVerify ? 'verified' : 'rejected',
+                'contract_verified_at' => $isVerify ? $now : null,
+                'contract_verified_by' => $isVerify ? $userId : null,
+            ]);
+        } else {
+            $rental->update([
+                'id_status' => $isVerify ? 'verified' : 'rejected',
+                'id_verified_at' => $isVerify ? $now : null,
+                'id_verified_by' => $isVerify ? $userId : null,
+            ]);
+        }
+
+        // Check if both documents are verified and update status
+        if ($isVerify && $rental->isDocumentsComplete()) {
+            if ($rental->status === 'documents_pending') {
+                $rental->update(['status' => 'documents_verified']);
+            }
+        }
+
+        $message = $isVerify ? 'Document verified successfully.' : 'Document rejected.';
+        return back()->with('success', $message);
+    }
+
+    public function requestDocuments(Rental $rental, Request $request)
+    {
+        $this->authorize('admin');
+        
+        $action = $request->input('action', 'request');
+        
+        if ($action === 'complete') {
+            // Documents are complete, proceed to reserved
+            if ($rental->isDocumentsComplete()) {
+                $rental->update(['status' => 'reserved']);
+                $rental->car->update(['status' => 'rented']);
+                return redirect()->route('rentals.show', $rental)
+                    ->with('success', 'Documents verified. Vehicle reserved.');
+            }
+            return back()->withErrors('Both documents must be verified first.');
+        }
+        
+        // Request documents
+        $rental->update(['status' => 'documents_pending']);
+        return back()->with('success', 'Document request sent to customer.');
+    }
+
+    // Vehicle Release
+    public function releaseVehicle(Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        if (!$rental->canBeReleased()) {
+            return back()->withErrors('Documents must be verified before releasing vehicle.');
+        }
+
+        $rental->update([
+            'status' => 'ongoing',
+            'vehicle_released_at' => now(),
+            'released_by' => auth()->id(),
+        ]);
+
+        $rental->car->update(['status' => 'rented']);
+
+        return redirect()->route('rentals.show', $rental)
+            ->with('success', 'Vehicle released to customer.');
+    }
+
+    // Return Processing
+    public function returnForm(Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        if (!in_array($rental->status, ['ongoing', 'return_pending'])) {
+            return redirect()->route('rentals.show', $rental)
+                ->withErrors('Vehicle must be ongoing to process return.');
+        }
+
+        return view('rentals.return', compact('rental'));
+    }
+
+    public function processReturn(Request $request, Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        $validated = $request->validate([
+            'damage_panels' => 'required|integer|min:0',
+            'damage_description' => 'nullable|string|max:1000',
+            'damage_photos.*' => 'nullable|image|max:5120',
+            'damage_rate_per_panel' => 'nullable|numeric|min:0',
+            'fuel_level' => 'required|in:full,partial,empty',
+            'mileage_returned' => 'nullable|integer|min:0',
+            'mileage_start' => 'nullable|integer|min:0',
+            'fuel_charge' => 'nullable|numeric|min:0',
+            'late_return_charge' => 'nullable|numeric|min:0',
+            'cleaning_charge' => 'nullable|numeric|min:0',
+            'other_charges' => 'nullable|numeric|min:0',
+            'other_charges_notes' => 'nullable|string|max:500',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        // Handle damage photos
+        $damagePhotos = [];
+        if ($request->hasFile('damage_photos')) {
+            foreach ($request->file('damage_photos') as $photo) {
+                $damagePhotos[] = $photo->store("rentals/{$rental->id}/damage", 'private');
+            }
+        }
+
+        // Calculate damage fee
+        $damageRate = $validated['damage_rate_per_panel'] ?? 5000;
+        $damageFee = $validated['damage_panels'] * $damageRate;
+
+        // Calculate total additional charges
+        $additionalCharges = 
+            ($validated['fuel_charge'] ?? 0) +
+            ($validated['late_return_charge'] ?? 0) +
+            ($validated['cleaning_charge'] ?? 0) +
+            ($validated['other_charges'] ?? 0);
+
+        // Create return record
+        $rental->rentalReturn()->create([
+            'returned_at' => now(),
+            'returned_by' => auth()->id(),
+            'damage_panels' => $validated['damage_panels'],
+            'damage_description' => $validated['damage_description'],
+            'damage_photos' => $damagePhotos,
+            'damage_fee' => $damageFee,
+            'damage_rate_per_panel' => $damageRate,
+            'fuel_level' => $validated['fuel_level'],
+            'mileage_returned' => $validated['mileage_returned'],
+            'mileage_start' => $validated['mileage_start'],
+            'fuel_charge' => $validated['fuel_charge'] ?? 0,
+            'late_return_charge' => $validated['late_return_charge'] ?? 0,
+            'cleaning_charge' => $validated['cleaning_charge'] ?? 0,
+            'other_charges' => $validated['other_charges'] ?? 0,
+            'other_charges_notes' => $validated['other_charges_notes'],
+            'total_additional_charges' => $additionalCharges,
+            'notes' => $validated['notes'],
+        ]);
+
+        // Update rental and car status
+        $rental->update(['status' => 'completed']);
+        $rental->car->update(['status' => 'available']);
+
+        return redirect()->route('rentals.show', $rental)
+            ->with('success', 'Vehicle return processed successfully.');
+    }
+
+    // Download methods
+    public function downloadContract(Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        if (!$rental->contract_file_path || !Storage::disk('private')->exists($rental->contract_file_path)) {
+            abort(404, 'Contract file not found.');
+        }
+
+        return Storage::disk('private')->download($rental->contract_file_path, "Contract_{$rental->rental_id_display}.pdf");
+    }
+
+    public function downloadId(Rental $rental)
+    {
+        $this->authorize('admin');
+        
+        if (!$rental->id_file_path || !Storage::disk('private')->exists($rental->id_file_path)) {
+            abort(404, 'ID file not found.');
+        }
+
+        return Storage::disk('private')->download($rental->id_file_path, "ID_{$rental->rental_id_display}.jpg");
     }
 }

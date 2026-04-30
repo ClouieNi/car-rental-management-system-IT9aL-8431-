@@ -2,7 +2,9 @@
 @section('content')
 <div class="page-header">
     <h2>Rentals</h2>
-    <a href="{{ route('rentals.create') }}" class="btn btn-success btn-sm">+ New Rental</a>
+    @if(auth()->check() && auth()->user()->role === 'admin')
+        <a href="{{ route('rentals.create') }}" class="btn btn-success btn-sm">+ New Rental</a>
+    @endif
 </div>
 <div class="card">
     <table>
@@ -26,12 +28,15 @@
                 <td>&#8369;{{ number_format($rental->total_cost, 2) }}</td>
                 <td><span class="badge badge-{{ $rental->status }}">{{ ucfirst($rental->status) }}</span></td>
                 <td style="display:flex; gap:6px;">
-                    <a href="{{ route('rentals.edit', $rental) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('rentals.destroy', $rental) }}" method="POST"
-                          onsubmit="return confirm('Delete this rental?')">
-                        @csrf @method('DELETE')
-                        <button class="btn btn-danger btn-sm">Delete</button>
-                    </form>
+                    <a href="{{ route('rentals.show', $rental) }}" class="btn btn-primary btn-sm">View</a>
+                    @if(auth()->check() && auth()->user()->role === 'admin')
+                        <a href="{{ route('rentals.edit', $rental) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('rentals.destroy', $rental) }}" method="POST"
+                              onsubmit="return confirm('Delete this rental?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    @endif
                 </td>
             </tr>
             @empty

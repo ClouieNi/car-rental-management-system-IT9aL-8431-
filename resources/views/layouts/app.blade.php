@@ -304,6 +304,9 @@
             <a href="{{ route('cars.index') }}" class="nav-item {{ request()->routeIs('cars.*') ? 'active' : '' }}">
                 <i class="bi bi-car-front"></i> Fleet Management
             </a>
+            <a href="{{ route('suppliers.index') }}" class="nav-item {{ request()->routeIs('suppliers.*') ? 'active' : '' }}">
+                <i class="bi bi-building"></i> Suppliers
+            </a>
 
             <div class="nav-section-label">Rentals</div>
             <a href="{{ route('rentals.index') }}" class="nav-item {{ request()->routeIs('rentals.index') ? 'active' : '' }}">

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CustomerMessage;
-use App\Models\Rental;
+use App\Models\{Car, CustomerMessage, Driver, Rental};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class CustomerController extends Controller
 {
@@ -71,5 +72,119 @@ class CustomerController extends Controller
         ]);
 
         return back()->with('success', 'Your message has been sent to Cars ni Bai.');
+    }
+
+    public function createBooking()
+    {
+        $cars = Car::where('status', 'available')->get();
+        return view('rentals.create-booking', ['cars' => $cars]);
+    }
+
+    public function storeBooking(Request $request)
+    {
+        $validated = $request->validate([
+            'car_id' => 'required|exists:cars,id',
+            'start_date' => 'required|date|after:today',
+            'end_date' => 'required|date|after:start_date',
+            'rental_type' => 'required|in:with_driver,self_drive',
+            'destination' => 'nullable|string|max:255',
+            'distance_km' => 'nullable|integer|min:0',
+            'license_number' => 'required|string|max:50',
+            'license_expiry' => 'required|date|after:today',
+            'license_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'customer_notes' => 'nullable|string|max:1000',
+        ]);
+
+        $car = Car::findOrFail($validated['car_id']);
+        
+        // Check license expiry before rental end date
+        $licenseExpiry = Carbon::parse($validated['license_expiry']);
+        $rentalEnd = Carbon::parse($validated['end_date']);
+        if ($licenseExpiry->lessThan($rentalEnd)) {
+            return back()->withErrors(['license_expiry' => 'License expires before rental end date']);
+        }
+
+        // Check car availability for these dates
+        $carAvailable = Car::availableBetween($validated['start_date'], $validated['end_date'])
+            ->where('id', $validated['car_id'])
+            ->exists();
+        
+        if (!$carAvailable) {
+            return back()->withErrors(['car_id' => 'Car not available for selected dates']);
+        }
+
+        // Create or get driver record
+        $driver = Driver::where('license_number', $validated['license_number'])->first();
+        if (!$driver) {
+            $driver = Driver::create([
+                'user_id' => auth()->id(),
+                'license_number' => $validated['license_number'],
+                'license_expiry' => $validated['license_expiry'],
+            ]);
+        }
+
+        // Store license file
+        if ($request->hasFile('license_file')) {
+            $path = $request->file('license_file')->store("drivers/{$driver->id}", 'private');
+            $driver->update(['license_file_path' => $path]);
+        }
+
+        // Calculate pricing
+        $days = Carbon::parse($validated['start_date'])->diffInDays(Carbon::parse($validated['end_date'])) ?: 1;
+        $baseCost = $car->daily_rate * $days;
+        $surcharge = $validated['distance_km'] ? ($validated['distance_km'] * 0.50) : 0;
+        $totalCost = $baseCost + $surcharge;
+
+        // Create rental with pending status
+        $rental = Rental::create([
+            'car_id' => $car->id,
+            'customer_user_id' => auth()->id(),
+            'driver_id' => $driver->id,
+            'rental_type' => $validated['rental_type'],
+            'destination' => $validated['destination'],
+            'distance_km' => $validated['distance_km'] ?? 0,
+            'distance_surcharge' => $surcharge,
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'total_cost' => $totalCost,
+            'customer_notes' => $validated['customer_notes'],
+            'status' => 'pending',
+            'payment_status' => 'unpaid',
+        ]);
+
+        return redirect()->route('customer.booking-confirmation', $rental)
+            ->with('success', 'Booking request submitted. Awaiting staff approval.');
+    }
+
+    public function bookingConfirmation(Rental $rental)
+    {
+        abort_if($rental->customer_user_id !== auth()->id(), 403);
+        return view('rentals.booking-confirmation', ['rental' => $rental]);
+    }
+
+    public function requestCancellation(Rental $rental)
+    {
+        abort_if($rental->customer_user_id !== auth()->id(), 403);
+        
+        if (!in_array($rental->status, ['pending', 'approved'])) {
+            return back()->withErrors('Cannot cancel this rental');
+        }
+
+        $validated = request()->validate([
+            'cancellation_reason' => 'required|string|max:500',
+        ]);
+
+        $refundPercent = $rental->calculateRefundPercent();
+        $refundAmount = $rental->calculateRefundAmount();
+
+        $rental->update([
+            'status' => 'cancellation_requested',
+            'cancellation_reason' => $validated['cancellation_reason'],
+            'cancellation_requested_at' => now(),
+            'cancellation_refund_percent' => $refundPercent,
+            'refund_amount' => $refundAmount,
+        ]);
+
+        return back()->with('success', "Cancellation requested. Refund: \${$refundAmount}");
     }
 }

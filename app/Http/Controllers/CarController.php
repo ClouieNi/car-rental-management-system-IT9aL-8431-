@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,19 +28,21 @@ class CarController extends Controller
             });
         }
 
-        $cars = $query->orderBy('brand')->paginate(12)->withQueryString();
+        $cars = $query->with('supplier')->orderBy('brand')->paginate(12)->withQueryString();
 
         return view('cars.index', compact('cars'));
     }
 
     public function create()
     {
-        return view('cars.create');
+        $suppliers = Supplier::active()->orderBy('name')->get();
+        return view('cars.create', compact('suppliers'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
+            'supplier_id'      => 'required|exists:suppliers,id',
             'plate_number'     => 'required|string|max:20|unique:cars,plate_number',
             'brand'            => 'required|string|max:50',
             'model'            => 'required|string|max:50',
@@ -73,12 +76,14 @@ class CarController extends Controller
 
     public function edit(Car $car)
     {
-        return view('cars.edit', compact('car'));
+        $suppliers = Supplier::active()->orderBy('name')->get();
+        return view('cars.edit', compact('car', 'suppliers'));
     }
 
     public function update(Request $request, Car $car)
     {
         $data = $request->validate([
+            'supplier_id'      => 'required|exists:suppliers,id',
             'plate_number'     => 'required|string|max:20|unique:cars,plate_number,' . $car->id,
             'brand'            => 'required|string|max:50',
             'model'            => 'required|string|max:50',
