@@ -187,4 +187,69 @@ class CustomerController extends Controller
 
         return back()->with('success', "Cancellation requested. Refund: \${$refundAmount}");
     }
+
+    public function documentsForm(Rental $rental)
+    {
+        abort_if($rental->customer_user_id !== auth()->id(), 403);
+        
+        // Only allow document upload for approved or documents_pending status
+        if (!in_array($rental->status, ['approved', 'documents_pending', 'documents_verified'])) {
+            return redirect()->route('customer.rental-show', $rental)
+                ->with('info', 'Document upload is not available for this rental status.');
+        }
+        
+        $rental->load('car');
+        return view('customer.documents', compact('rental'));
+    }
+
+    public function uploadDocuments(Request $request, Rental $rental)
+    {
+        abort_if($rental->customer_user_id !== auth()->id(), 403);
+        
+        // Only allow document upload for approved or documents_pending status
+        if (!in_array($rental->status, ['approved', 'documents_pending'])) {
+            return back()->withErrors(['error' => 'Document upload is not available for this rental status.']);
+        }
+
+        $validated = $request->validate([
+            'contract_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'id_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        $uploaded = [];
+
+        // Handle contract file upload
+        if ($request->hasFile('contract_file')) {
+            $contractPath = $request->file('contract_file')->store(
+                "rentals/{$rental->id}/contract", 
+                'private'
+            );
+            $rental->update([
+                'contract_file_path' => $contractPath,
+                'contract_status' => 'uploaded',
+            ]);
+            $uploaded[] = 'Contract';
+        }
+
+        // Handle ID file upload
+        if ($request->hasFile('id_file')) {
+            $idPath = $request->file('id_file')->store(
+                "rentals/{$rental->id}/id", 
+                'private'
+            );
+            $rental->update([
+                'id_file_path' => $idPath,
+                'id_uploaded_at' => now(),
+            ]);
+            $uploaded[] = 'ID';
+        }
+
+        // Update rental status to documents_pending if files were uploaded
+        if (count($uploaded) > 0 && $rental->status === 'approved') {
+            $rental->update(['status' => 'documents_pending']);
+        }
+
+        $uploadedText = implode(' and ', $uploaded);
+        return back()->with('success', "{$uploadedText} uploaded successfully. Awaiting staff verification.");
+    }
 }
