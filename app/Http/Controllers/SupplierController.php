@@ -7,11 +7,27 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $suppliers = Supplier::withCount('cars')
-            ->orderBy('name')
-            ->paginate(15);
+        $query = Supplier::withCount('cars')->orderBy('name');
+
+        if ($request->filled('search')) {
+            $q = $request->search;
+            $query->where(function ($sq) use ($q) {
+                $sq->where('name', 'like', "%$q%")
+                   ->orWhere('contact_person', 'like', "%$q%")
+                   ->orWhere('email', 'like', "%$q%")
+                   ->orWhere('phone', 'like', "%$q%");
+            });
+        }
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status === 'active');
+        }
+
+        $suppliers = $query->paginate(15)->withQueryString();
 
         return view('suppliers.index', compact('suppliers'));
     }

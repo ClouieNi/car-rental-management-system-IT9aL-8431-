@@ -221,6 +221,12 @@ class RentalController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+        if ($request->filled('supplier_id')) {
+            $query->whereHas('car', fn($q) => $q->where('supplier_id', $request->supplier_id));
+        }
 
         $rentals = $query->get();
 
@@ -254,7 +260,9 @@ class RentalController extends Controller
             'net_revenue'      => $companyRevenue + ($partnerRevenue - $totalCommission),
         ];
 
-        return view('rentals.mastersheet', compact('rentals', 'totals'));
+        $suppliers = \App\Models\Supplier::active()->orderBy('name')->get();
+
+        return view('rentals.mastersheet', compact('rentals', 'totals', 'suppliers'));
     }
 
     public function pendingApprovals()
