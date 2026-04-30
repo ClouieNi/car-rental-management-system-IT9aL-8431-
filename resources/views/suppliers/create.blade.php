@@ -6,7 +6,7 @@
 
 @section('content')
 
-<div class="card" style="max-width: 600px;">
+<div class="card" style="max-width: 600px; margin: 0 auto;">
     <form method="POST" action="{{ route('suppliers.store') }}">
         @csrf
         @include('suppliers._form')

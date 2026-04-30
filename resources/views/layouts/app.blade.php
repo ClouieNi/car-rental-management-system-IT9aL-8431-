@@ -141,15 +141,6 @@
             </div>
             
             <div class="flex items-center gap-2.5">
-                <a href="{{ route('rentals.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gold text-dark font-semibold rounded-md hover:bg-gold-light transition-colors text-[13px]">
-                    <i class="bi bi-plus"></i> New Rental
-                </a>
-                <a href="{{ route('messages.index') }}" class="relative w-9 h-9 bg-dark-200 border border-white/10 rounded-md flex items-center justify-center text-gray-400 hover:bg-gold/10 hover:text-gold transition-colors">
-                    <i class="bi bi-chat text-base"></i>
-                    @if(\App\Models\CustomerMessage::where('is_read', false)->count() > 0)
-                        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-gold rounded-full border-2 border-dark-100"></span>
-                    @endif
-                </a>
             </div>
         </header>
 

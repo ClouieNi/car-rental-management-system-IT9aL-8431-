@@ -301,16 +301,179 @@
     .is-invalid { border-color: var(--danger) !important; }
     .invalid-feedback { color: var(--danger); font-size: 12px; margin-top: 4px; }
 
+    /* VEHICLE GRID */
+    .vehicle-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    .vehicle-card {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: border-color .15s, transform .15s;
+        display: flex;
+        flex-direction: column;
+    }
+    .vehicle-card:hover {
+        border-color: var(--border);
+        transform: translateY(-2px);
+    }
+    .vehicle-card-img {
+        position: relative;
+        width: 100%;
+        height: 160px;
+        background: var(--black-3);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .vehicle-card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .vehicle-card-img .status-tag {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+    .status-tag.available { background: rgba(34,197,94,.85); color: #fff; }
+    .status-tag.rented    { background: rgba(56,189,248,.85); color: #fff; }
+    .status-tag.maintenance { background: rgba(239,68,68,.85); color: #fff; }
+    .vehicle-card-body {
+        padding: 16px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .vehicle-card-body h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+    }
+    .vehicle-card-body .vehicle-meta {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 10px;
+    }
+    .vehicle-card-body .vehicle-price {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 22px;
+        color: var(--gold);
+        letter-spacing: .5px;
+        margin-bottom: 6px;
+    }
+    .vehicle-card-body .vehicle-supplier {
+        font-size: 11px;
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: auto;
+    }
+    .vehicle-card-body .vehicle-supplier i { color: var(--gold); }
+    .vehicle-card-actions {
+        display: flex;
+        gap: 0;
+        border-top: 1px solid var(--border-subtle);
+    }
+    .vehicle-card-actions a,
+    .vehicle-card-actions button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        transition: all .15s;
+    }
+    .vehicle-card-actions .edit-btn {
+        background: var(--gold);
+        color: var(--black);
+        flex: 4;
+    }
+    .vehicle-card-actions .edit-btn:hover {
+        background: var(--gold-light);
+    }
+    .vehicle-card-actions .delete-btn {
+        background: rgba(239,68,68,0.1);
+        color: var(--danger);
+        flex: 1;
+        border-left: 1px solid var(--border-subtle);
+    }
+    .vehicle-card-actions .delete-btn:hover {
+        background: rgba(239,68,68,0.2);
+    }
+
+    /* CHECKBOX LABEL */
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text-primary);
+        cursor: pointer;
+    }
+    .checkbox-label input[type="checkbox"] {
+        accent-color: var(--gold);
+        width: 16px;
+        height: 16px;
+    }
+
+    /* FILE INPUT */
+    .form-control-file {
+        width: 100%;
+        background: var(--black-3);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-sm);
+        color: var(--text-primary);
+        padding: 8px 12px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px;
+    }
+    .form-control-file::file-selector-button {
+        background: var(--gold);
+        color: var(--black);
+        border: none;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 12px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
     /* RESPONSIVE */
+    @media (max-width: 1100px) {
+        .vehicle-grid { grid-template-columns: repeat(3, 1fr); }
+    }
     @media (max-width: 900px) {
         .grid-4 { grid-template-columns: repeat(2, 1fr); }
         .grid-3 { grid-template-columns: repeat(2, 1fr); }
         .totals-grid { grid-template-columns: repeat(2, 1fr); }
         .form-row { grid-template-columns: 1fr; }
+        .vehicle-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 600px) {
         .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
         .totals-grid { grid-template-columns: 1fr; }
+        .vehicle-grid { grid-template-columns: 1fr; }
     }
 }
 

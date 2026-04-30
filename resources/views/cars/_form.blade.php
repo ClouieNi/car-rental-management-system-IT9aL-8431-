@@ -46,6 +46,47 @@
         @error('daily_rate')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 </div>
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label">Vehicle Type</label>
+        <select name="vehicle_type" class="form-control {{ $errors->has('vehicle_type') ? 'is-invalid' : '' }}">
+            <option value="">-- Select Type --</option>
+            @foreach(['sedan','suv','mpv','pickup','van','other'] as $t)
+                <option value="{{ $t }}" {{ old('vehicle_type', $car->vehicle_type ?? '') == $t ? 'selected' : '' }}>
+                    {{ ucfirst($t) }}
+                </option>
+            @endforeach
+        </select>
+        @error('vehicle_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+    <div class="form-group">
+        <label class="form-label">Transmission</label>
+        <select name="transmission" class="form-control {{ $errors->has('transmission') ? 'is-invalid' : '' }}">
+            <option value="">-- Select --</option>
+            <option value="automatic" {{ old('transmission', $car->transmission ?? '') == 'automatic' ? 'selected' : '' }}>Automatic</option>
+            <option value="manual" {{ old('transmission', $car->transmission ?? '') == 'manual' ? 'selected' : '' }}>Manual</option>
+        </select>
+        @error('transmission')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group">
+        <label class="form-label">Fuel Type</label>
+        <select name="fuel_type" class="form-control {{ $errors->has('fuel_type') ? 'is-invalid' : '' }}">
+            <option value="">-- Select --</option>
+            <option value="gasoline" {{ old('fuel_type', $car->fuel_type ?? '') == 'gasoline' ? 'selected' : '' }}>Gasoline</option>
+            <option value="diesel" {{ old('fuel_type', $car->fuel_type ?? '') == 'diesel' ? 'selected' : '' }}>Diesel</option>
+            <option value="electric" {{ old('fuel_type', $car->fuel_type ?? '') == 'electric' ? 'selected' : '' }}>Electric</option>
+        </select>
+        @error('fuel_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+    <div class="form-group">
+        <label class="form-label">Seating Capacity</label>
+        <input type="number" name="seating_capacity" class="form-control {{ $errors->has('seating_capacity') ? 'is-invalid' : '' }}"
+               value="{{ old('seating_capacity', $car->seating_capacity ?? '') }}" placeholder="e.g. 5" min="2" max="20">
+        @error('seating_capacity')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+</div>
 <div class="form-group">
     <label class="form-label">Status</label>
     <select name="status" class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}">
@@ -57,4 +98,17 @@
         @endforeach
     </select>
     @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+</div>
+<div class="form-group">
+    <label class="form-label">Vehicle Image</label>
+    <input type="file" name="image" class="form-control-file" accept="image/*">
+    @if(isset($car) && $car->image_path)
+        <small style="color: var(--text-muted); margin-top: 4px; display: block;">Current image uploaded. Upload a new one to replace.</small>
+    @endif
+    @error('image')<div class="invalid-feedback">{{ $message }}</div>@enderror
+</div>
+<div class="form-group">
+    <label class="form-label">Description</label>
+    <textarea name="description" class="form-control" rows="2" placeholder="Optional vehicle description...">{{ old('description', $car->description ?? '') }}</textarea>
+    @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>

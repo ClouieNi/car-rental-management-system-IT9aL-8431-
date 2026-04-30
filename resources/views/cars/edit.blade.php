@@ -1,15 +1,19 @@
 @extends('layouts.app')
+
+@section('title', 'Edit Car')
+@section('page-title', 'Edit Vehicle')
+@section('breadcrumb', 'Update vehicle details')
+
 @section('content')
-<div style="max-width:560px; margin:0 auto;">
+<div style="max-width:600px; margin:0 auto;">
     <div class="card">
-        <div class="card-header">Edit Car — {{ $car->plate_number }}</div>
         <div class="card-body">
-            <form action="{{ route('cars.update', $car) }}" method="POST">
+            <form action="{{ route('cars.update', $car) }}" method="POST" enctype="multipart/form-data">
                 @csrf @method('PUT')
                 @include('cars._form')
                 <div class="form-actions">
                     <a href="{{ route('cars.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button class="btn btn-warning">Update Car</button>
+                    <button class="btn btn-gold">Update Car</button>
                 </div>
             </form>
         </div>

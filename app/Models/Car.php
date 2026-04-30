@@ -72,7 +72,9 @@ class Car extends Model
         if ($this->image_path) {
             return asset('storage/' . $this->image_path);
         }
-        return asset('images/car-placeholder.png');
+        $typeImages = ['sedan', 'suv', 'mpv', 'pickup'];
+        $type = in_array($this->vehicle_type, $typeImages) ? $this->vehicle_type : 'sedan';
+        return asset("images/{$type}.png");
     }
 
     public function getStatusBadgeColorAttribute(): string

@@ -8,7 +8,7 @@
 <div style="max-width:600px; margin:0 auto;">
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('cars.store') }}" method="POST">
+            <form action="{{ route('cars.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @include('cars._form')
                 <div class="form-actions">
