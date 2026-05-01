@@ -6,7 +6,7 @@
 
     <!-- Book New Vehicle Button -->
     <div class="mb-8">
-        <a href="{{ route('book.create') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+        <a href="{{ route('book.create') }}" class="inline-block bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-6 rounded-lg transition">
             + Book a New Vehicle
         </a>
     </div>
@@ -24,7 +24,7 @@
                         </div>
                         <p class="text-sm text-gray-600 mb-2">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d, Y') }}</p>
                         <p class="text-lg font-bold text-gray-800 mb-3">${{ number_format($rental->total_cost, 2) }}</p>
-                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-blue-600 hover:underline text-sm">View Details</a>
+                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-gold hover:underline text-sm">View Details</a>
                     </div>
                 @endforeach
             </div>
@@ -47,7 +47,7 @@
                         @if($rental->payment_status === 'unpaid')
                             <p class="text-xs text-orange-600 font-semibold mb-2">Payment due</p>
                         @endif
-                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-blue-600 hover:underline text-sm">View Details</a>
+                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-gold hover:underline text-sm">View Details</a>
                     </div>
                 @endforeach
             </div>
@@ -60,14 +60,14 @@
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Currently Renting ({{ $ongoing->count() }})</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($ongoing as $rental)
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="bg-gold-muted border border-gold/20 rounded-lg p-4">
                         <div class="flex justify-between items-start mb-2">
                             <span class="font-semibold text-gray-800">{{ $rental->car->brand }} {{ $rental->car->model }}</span>
-                            <span class="px-2 py-1 bg-blue-200 text-blue-900 text-xs font-semibold rounded">Ongoing</span>
+                            <span class="px-2 py-1 bg-gold/20 text-gold text-xs font-semibold rounded">Ongoing</span>
                         </div>
                         <p class="text-sm text-gray-600 mb-2">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d, Y') }}</p>
                         <p class="text-lg font-bold text-gray-800 mb-3">${{ number_format($rental->total_cost, 2) }}</p>
-                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-blue-600 hover:underline text-sm">View Details</a>
+                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-gold hover:underline text-sm">View Details</a>
                     </div>
                 @endforeach
             </div>
@@ -87,7 +87,7 @@
                         </div>
                         <p class="text-sm text-gray-600 mb-2">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d, Y') }}</p>
                         <p class="text-lg font-bold text-gray-800 mb-3">${{ number_format($rental->total_cost, 2) }}</p>
-                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-blue-600 hover:underline text-sm">View Details</a>
+                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-gold hover:underline text-sm">View Details</a>
                     </div>
                 @endforeach
             </div>
@@ -98,7 +98,7 @@
     @if((!isset($pending) || $pending->count() === 0) && (!isset($approved) || $approved->count() === 0) && (!isset($ongoing) || $ongoing->count() === 0) && (!isset($completed) || $completed->count() === 0))
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
             <p class="text-gray-600 text-lg mb-4">You don't have any bookings yet.</p>
-            <a href="{{ route('book.create') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+            <a href="{{ route('book.create') }}" class="inline-block bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-6 rounded-lg transition">
                 Book Your First Vehicle
             </a>
         </div>

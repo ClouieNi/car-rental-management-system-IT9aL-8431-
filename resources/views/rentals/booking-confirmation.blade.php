@@ -12,7 +12,7 @@
 
         <!-- Booking Details -->
         <div class="bg-white rounded-lg shadow-md p-8 mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Booking Reference: <span class="text-blue-600">{{ $rental->getRentalIdDisplayAttribute() }}</span></h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Booking Reference: <span class="text-gold">{{ $rental->getRentalIdDisplayAttribute() }}</span></h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <!-- Vehicle Info -->
@@ -41,7 +41,7 @@
             </div>
 
             <!-- Price Breakdown -->
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <div class="bg-gold-muted border border-gold/20 rounded-lg p-6 mb-8">
                 <h3 class="font-semibold text-gray-800 mb-4">Cost Breakdown</h3>
                 <div class="space-y-3">
                     <div class="flex justify-between">
@@ -58,7 +58,7 @@
                             <span>{{ $rental->distance_km }} km × $0.50 = ${{ number_format($rental->distance_surcharge, 2) }}</span>
                         </div>
                     @endif
-                    <div class="border-t border-blue-200 pt-3 flex justify-between font-bold text-lg">
+                    <div class="border-t border-gold/30 pt-3 flex justify-between font-bold text-lg">
                         <span>Total Cost:</span>
                         <span>${{ number_format($rental->total_cost, 2) }}</span>
                     </div>
@@ -86,7 +86,7 @@
 
         <!-- Action Buttons -->
         <div class="flex flex-col gap-3">
-            <a href="{{ route('customer.dashboard') }}" class="block text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">
+            <a href="{{ route('customer.dashboard') }}" class="block text-center bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-4 rounded-lg transition">
                 View My Bookings
             </a>
             <a href="{{ route('book.create') }}" class="block text-center bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-4 rounded-lg transition">

@@ -27,7 +27,7 @@
                     @forelse($cars as $car)
                         <label class="relative">
                             <input type="radio" name="car_id" value="{{ $car->id }}" class="sr-only car-selector" required>
-                            <div class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-blue-500 transition" id="car-{{ $car->id }}">
+                            <div class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-gold transition" id="car-{{ $car->id }}">
                                 @if($car->image_path)
                                     <img src="{{ asset('storage/' . $car->image_path) }}" alt="{{ $car->brand }} {{ $car->model }}" class="w-full h-40 object-cover rounded mb-2">
                                 @else
@@ -36,7 +36,7 @@
                                 <h3 class="font-bold text-lg">{{ $car->brand }} {{ $car->model }}</h3>
                                 <p class="text-sm text-gray-600">{{ $car->year }} • {{ ucfirst($car->vehicle_type) }}</p>
                                 <p class="text-sm text-gray-600">Seats: {{ $car->seating_capacity }}</p>
-                                <p class="text-blue-600 font-semibold mt-2">${{ number_format($car->daily_rate, 2) }}/day</p>
+                                <p class="text-gold font-semibold mt-2">${{ number_format($car->daily_rate, 2) }}/day</p>
                             </div>
                         </label>
                     @empty
@@ -50,13 +50,13 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Check-In Date *</label>
-                    <input type="date" name="start_date" id="start_date" min="{{ today()->format('Y-m-d') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    <input type="date" name="start_date" id="start_date" min="{{ today()->format('Y-m-d') }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold" />
                     @error('start_date')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Check-Out Date *</label>
-                    <input type="date" name="end_date" id="end_date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    <input type="date" name="end_date" id="end_date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold" />
                     @error('end_date')<p class="text-red-600 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
@@ -131,7 +131,7 @@
             </div>
 
             <!-- Price Summary -->
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <div class="bg-gold-muted border border-gold/20 rounded-lg p-6 mb-8">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Price Summary</h2>
                 <div class="space-y-2">
                     <div class="flex justify-between">
@@ -150,7 +150,7 @@
                         <span>Distance Surcharge:</span>
                         <span id="surcharge">$0.00</span>
                     </div>
-                    <div class="border-t border-blue-200 pt-2 mt-2 flex justify-between font-bold text-lg">
+                    <div class="border-t border-gold/30 pt-2 mt-2 flex justify-between font-bold text-lg">
                         <span>Total Cost:</span>
                         <span id="totalCost">$0.00</span>
                     </div>
@@ -160,7 +160,7 @@
 
             <!-- Submit -->
             <div class="flex gap-4">
-                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">
+                <button type="submit" class="flex-1 bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-4 rounded-lg transition">
                     Submit Booking Request
                 </button>
                 <a href="{{ route('book.create') }}" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-4 rounded-lg transition text-center">
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const carId = selectedCar.value;
         const carCard = document.querySelector(`#car-${carId}`);
-        const dailyRateText = carCard.querySelector('p.text-blue-600').textContent;
+        const dailyRateText = carCard.querySelector('p.text-gold').textContent;
         const dailyRate = parseFloat(dailyRateText.match(/\$([0-9.]+)/)[1]);
 
         const startDate = new Date(startDateInput.value);

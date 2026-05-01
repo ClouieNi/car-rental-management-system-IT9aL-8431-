@@ -21,7 +21,7 @@
                 <tbody class="divide-y divide-gray-200">
                     @foreach ($rentals as $rental)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm font-semibold text-blue-600">
+                            <td class="px-6 py-4 text-sm font-semibold text-gold">
                                 <a href="{{ route('rentals.show', $rental) }}" class="hover:underline">
                                     {{ $rental->getRentalIdDisplayAttribute() }}
                                 </a>
@@ -43,7 +43,7 @@
                             </td>
                             <td class="px-6 py-4 text-sm">
                                 @if($rental->driver && $rental->driver->license_file_path)
-                                    <a href="{{ route('rentals.show', $rental) }}" class="text-blue-600 hover:underline">
+                                    <a href="{{ route('rentals.show', $rental) }}" class="text-gold hover:underline">
                                         View License
                                     </a>
                                 @else
@@ -75,8 +75,8 @@
             {{ $rentals->links() }}
         </div>
     @else
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
-            <p class="text-blue-700 text-lg">No pending rental approvals at the moment.</p>
+        <div class="bg-gold-muted border border-gold/20 rounded-lg p-8 text-center">
+            <p class="text-gold text-lg">No pending rental approvals at the moment.</p>
         </div>
     @endif
 </div>
