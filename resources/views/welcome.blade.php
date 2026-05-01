@@ -407,7 +407,7 @@
 
 <!-- Navigation -->
 <nav class="nav">
-    <a href="/" class="nav-brand">
+    <a href="/landing" class="nav-brand">
         CARS NI BAI
         <span>Rental Management</span>
     </a>

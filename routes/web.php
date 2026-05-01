@@ -23,7 +23,7 @@ Route::get('/logout', function () {
 })->name('logout.get');
 
 // ── Public: Landing & Quote Request ────────────────────────
-Route::get('/', function () {
+Route::get('/landing', function () {
     return view('welcome');
 })->name('landing');
 

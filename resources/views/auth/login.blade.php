@@ -157,11 +157,11 @@
 <div class="bg-glow"></div>
 
 <nav class="nav">
-    <a href="/" class="nav-brand">
+    <a href="/landing" class="nav-brand">
         CARS NI BAI
         <span>Rental Management</span>
     </a>
-    <a href="/" class="back-link">
+    <a href="/landing" class="back-link">
         <i class="bi bi-arrow-left"></i> Back to Home
     </a>
 </nav>
