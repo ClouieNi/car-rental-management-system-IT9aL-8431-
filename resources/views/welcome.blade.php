@@ -353,8 +353,8 @@
     <div class="nav-links">
         <a href="#fleet">Fleet</a>
         <a href="#features">Features</a>
-        <a href="{{ route('quotes.request') }}" class="cta">
-            <i class="bi bi-send"></i> Get a Quote
+        <a href="#login" class="cta">
+            <i class="bi bi-box-arrow-in-right"></i> Sign In
         </a>
     </div>
 </nav>
@@ -372,20 +372,20 @@
             <strong>Affordable rates</strong>, well-maintained fleet, hassle-free booking — all under one roof.
         </p>
         <div class="hero-actions">
-            <a href="{{ route('quotes.request') }}" class="btn-hero primary">
-                <i class="bi bi-send"></i> Get a Quote
+            <a href="#login" class="btn-hero primary">
+                <i class="bi bi-box-arrow-in-right"></i> Sign In
             </a>
-            <a href="#fleet" class="btn-hero outline">
-                <i class="bi bi-car-front"></i> View Fleet
+            <a href="{{ route('quotes.request') }}" class="btn-hero outline">
+                <i class="bi bi-send"></i> Get a Quote
             </a>
         </div>
         <div class="signin-hint">
-            <i class="bi bi-arrow-right"></i> Already have an account? Sign in on the right
+            <i class="bi bi-arrow-right"></i> Don't have an account? Request a quote instead
         </div>
     </div>
 
     <!-- Right: Login Form -->
-    <div class="hero-right">
+    <div class="hero-right" id="login">
         <div class="login-card">
             <div class="lock-badge"><i class="bi bi-shield-lock"></i></div>
             <h2>SIGN IN</h2>
