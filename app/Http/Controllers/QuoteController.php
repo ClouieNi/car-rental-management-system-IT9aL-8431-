@@ -7,6 +7,7 @@ use App\Models\Quote;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class QuoteController extends Controller
 {
@@ -48,9 +49,34 @@ class QuoteController extends Controller
 
         if ($request->status === 'accepted') {
             $quote->update(['expires_at' => now()->addHours(48)]);
+
+            // Create or update customer user account
+            $user = User::firstOrCreate(
+                ['email' => $quote->guest_email],
+                [
+                    'name' => $quote->guest_name,
+                    'role' => 'customer',
+                    'password' => null, // Will be set by customer
+                    'setup_token' => hash('sha256', Str::random(40)),
+                    'setup_expires' => now()->addHours(24),
+                ]
+            );
+
+            // Send account setup email (optional - can be added later)
+            // TODO: Send email notification with setup link
+
+            return redirect()->route('quotes.prepare', $quote)
+                           ->with('success', 'Quote accepted. Prepare the rental details before converting to transaction.');
         }
 
         return back()->with('success', "Quote status updated to {$request->status}.");
+    }
+
+    public function prepare(Quote $quote)
+    {
+        $quote->load('car');
+        $cars = Car::where('status', 'available')->orWhere('id', $quote->car_id)->orderBy('brand')->get();
+        return view('quotes.prepare', compact('quote', 'cars'));
     }
 
     public function convertToRental(Quote $quote)

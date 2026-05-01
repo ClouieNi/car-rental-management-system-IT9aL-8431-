@@ -130,6 +130,69 @@ class RentalController extends Controller
                          ->with('success', 'Rental booking created successfully.');
     }
 
+    public function storeFromQuote(Request $request, \App\Models\Quote $quote)
+    {
+        $data = $request->validate([
+            'car_id'        => 'required|exists:cars,id',
+            'start_date'    => 'required|date|after_or_equal:today',
+            'end_date'      => 'required|date|after:start_date',
+            'rental_type'   => 'required|in:with_driver,self_drive',
+            'destination'   => 'nullable|string|max:255',
+            'distance_km'   => 'nullable|integer|min:0',
+            'admin_notes'   => 'nullable|string|max:1000',
+        ]);
+
+        // Find or create customer user
+        $customer = User::firstOrCreate(
+            ['email' => $quote->guest_email],
+            [
+                'name' => $quote->guest_name,
+                'role' => 'customer',
+            ]
+        );
+
+        $car = Car::findOrFail($data['car_id']);
+        if (!$car->isAvailableForDates($data['start_date'], $data['end_date'])) {
+            return back()->withErrors(['car_id' => 'This vehicle is not available for the selected dates.'])
+                         ->withInput();
+        }
+
+        $distanceKm = (int)($data['distance_km'] ?? 0);
+        $surcharge  = Rental::calculateDistanceSurcharge($distanceKm);
+        $days       = max(1, (int)((strtotime($data['end_date']) - strtotime($data['start_date'])) / 86400));
+        $totalCost  = ($car->daily_rate * $days) + $surcharge;
+
+        $rental = Rental::create([
+            'car_id'              => $data['car_id'],
+            'customer_user_id'    => $customer->id,
+            'customer_name'       => $quote->guest_name,
+            'rental_type'         => $data['rental_type'],
+            'destination'         => $data['destination'] ?? null,
+            'distance_km'         => $distanceKm,
+            'distance_surcharge'  => $surcharge,
+            'start_date'          => $data['start_date'],
+            'end_date'            => $data['end_date'],
+            'total_cost'          => $totalCost,
+            'payment_status'      => 'unpaid',
+            'amount_paid'         => 0,
+            'status'              => 'reserved',
+            'customer_notes'      => $quote->guest_notes ?? null,
+            'admin_notes'         => $data['admin_notes'] ?? null,
+        ]);
+
+        // Update quote status to converted
+        $quote->update(['status' => 'converted']);
+
+        $today = now()->toDateString();
+        if ($data['start_date'] <= $today && $data['end_date'] >= $today) {
+            $car->update(['status' => 'rented']);
+            $rental->update(['status' => 'ongoing']);
+        }
+
+        return redirect()->route('rentals.show', $rental)
+                         ->with('success', 'Rental transaction created successfully from quote. Customer can now log in to view their booking.');
+    }
+
     public function show(Rental $rental)
     {
         $rental->load(['car', 'customer', 'messages']);

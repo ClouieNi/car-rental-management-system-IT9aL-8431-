@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerSetupController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
@@ -86,6 +87,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/quotes',                   [QuoteController::class, 'index'])->name('quotes.index');
         Route::get('/quotes/{quote}',           [QuoteController::class, 'show'])->name('quotes.show');
         Route::patch('/quotes/{quote}/status',  [QuoteController::class, 'updateStatus'])->name('quotes.update-status');
+        Route::get('/quotes/{quote}/prepare',   [QuoteController::class, 'prepare'])->name('quotes.prepare');
+        Route::post('/quotes/{quote}/rental',  [RentalController::class, 'storeFromQuote'])->name('rentals.store-from-quote');
         Route::get('/quotes/{quote}/convert',   [QuoteController::class, 'convertToRental'])->name('quotes.convert');
 
         // Messages
@@ -93,6 +96,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/messages/{message}',        [MessageController::class, 'show'])->name('messages.show');
         Route::post('/messages/{message}/reply', [MessageController::class, 'reply'])->name('messages.reply');
     });
+
+    // ── CUSTOMER SETUP ─────────────────────────────────
+    Route::get('/customer/setup',    [CustomerSetupController::class, 'showSetupForm'])->name('customer.setup');
+    Route::post('/customer/setup',   [CustomerSetupController::class, 'processSetup'])->name('customer.setup.process');
 
     // ── CUSTOMER PORTAL ──────────────────────────────────
     Route::prefix('my')->name('customer.')->group(function () {
