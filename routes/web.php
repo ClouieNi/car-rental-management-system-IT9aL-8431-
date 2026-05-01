@@ -22,7 +22,11 @@ Route::get('/logout', function () {
     return redirect('/login');
 })->name('logout.get');
 
-// ── Public: Quote Request ──────────────────────────────────
+// ── Public: Landing & Quote Request ────────────────────────
+Route::get('/', function () {
+    return view('welcome');
+})->name('landing');
+
 Route::get('/quote', [QuoteController::class, 'requestForm'])->name('quotes.request');
 Route::post('/quote', [QuoteController::class, 'requestStore'])->name('quotes.request.store');
 Route::get('/quote/thanks', [QuoteController::class, 'thanks'])->name('quotes.request.thanks');
