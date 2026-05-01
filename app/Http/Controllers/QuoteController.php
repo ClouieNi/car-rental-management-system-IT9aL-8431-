@@ -116,7 +116,7 @@ class QuoteController extends Controller
         $baseCost  = $car->daily_rate * $days;
         $total     = $baseCost + $surcharge;
 
-        Quote::create([
+        $quote = Quote::create([
             'guest_name'         => $data['guest_name'],
             'guest_email'        => $data['guest_email'],
             'guest_phone'        => $data['guest_phone'],
@@ -127,15 +127,36 @@ class QuoteController extends Controller
             'days'               => $days,
             'destination'        => $data['destination'] ?? null,
             'distance_km'        => $distKm,
-            'base_cost'          => $baseCost,
             'distance_surcharge' => $surcharge,
+            'base_cost'          => $baseCost,
             'total_estimate'     => $total,
             'guest_notes'        => $data['guest_notes'] ?? null,
             'status'             => 'pending',
         ]);
 
+        // Create or get existing customer account with auto-generated password
+        $tempPassword = Str::random(10);
+        $user = User::firstOrCreate(
+            ['email' => $data['guest_email']],
+            [
+                'name'     => $data['guest_name'],
+                'role'     => 'customer',
+                'password' => Hash::make($tempPassword),
+            ]
+        );
+
+        // If user already existed, generate a new temp password for display
+        if (!$user->wasRecentlyCreated) {
+            $tempPassword = null; // Don't show password for existing accounts
+        }
+
         return redirect()->route('quotes.request.thanks')
-                         ->with('success', 'Your quote request has been submitted! We will contact you shortly.');
+                         ->with([
+                             'quote_id'      => $quote->id,
+                             'email'         => $data['guest_email'],
+                             'temp_password' => $tempPassword,
+                             'is_new_account'=> $user->wasRecentlyCreated,
+                         ]);
     }
 
     public function thanks()

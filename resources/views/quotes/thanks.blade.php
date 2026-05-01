@@ -98,6 +98,61 @@
             color: #555; font-size: 12px;
         }
         .footer-link:hover { color: #FFB800; }
+
+        /* Credentials Section */
+        .credentials-box {
+            background: rgba(255,184,0,0.08);
+            border: 1px solid rgba(255,184,0,0.25);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+        .credentials-box h3 {
+            color: #FFB800;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .credential-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,184,0,0.1);
+        }
+        .credential-row:last-child { border-bottom: none; }
+        .credential-label {
+            color: #A1A09A;
+            font-size: 13px;
+        }
+        .credential-value {
+            color: #EDEDEC;
+            font-family: monospace;
+            font-size: 14px;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+        .password-note {
+            font-size: 12px;
+            color: #FFB800;
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(255,184,0,0.05);
+            border-radius: 6px;
+        }
+        .login-btn {
+            background: #4ADE80;
+            color: #0A0A0A;
+        }
+        .login-btn:hover {
+            background: #5EE090;
+            box-shadow: 0 8px 24px rgba(74,222,128,0.25);
+        }
     </style>
 </head>
 <body>
@@ -111,17 +166,56 @@
 
     <p class="message">
         Thank you for booking with <strong>Cars ni Bai</strong>!<br>
-        Your booking request has been submitted and is now under review.
+        Your quote request has been submitted and is now under review.
     </p>
 
-    <div class="info-strip">
-        <i class="bi bi-clock"></i>
-        <span>Our team will contact you within <strong style="color:#EDEDEC;">24 hours</strong> to confirm details and finalize your reservation.</span>
-    </div>
+    @if(session('is_new_account') && session('temp_password'))
+        <!-- New Account Credentials -->
+        <div class="credentials-box">
+            <h3><i class="bi bi-person-check"></i> Your Account Has Been Created</h3>
+            <p style="font-size: 13px; color: #A1A09A; margin-bottom: 15px;">
+                You can now log in to track your quote status and manage your bookings.
+            </p>
+            <div class="credential-row">
+                <span class="credential-label">Email:</span>
+                <span class="credential-value">{{ session('email') }}</span>
+            </div>
+            <div class="credential-row">
+                <span class="credential-label">Password:</span>
+                <span class="credential-value">{{ session('temp_password') }}</span>
+            </div>
+            <div class="password-note">
+                <i class="bi bi-exclamation-triangle"></i>
+                Please save this password. You can change it after logging in.
+            </div>
+        </div>
 
-    <a href="/login" class="btn">
-        <i class="bi bi-arrow-left"></i> Back to Home
-    </a>
+        <a href="/login" class="btn login-btn">
+            <i class="bi bi-box-arrow-in-right"></i> Log In to Your Account
+        </a>
+    @elseif(session('email') && !session('temp_password'))
+        <!-- Existing Account -->
+        <div class="credentials-box">
+            <h3><i class="bi bi-person-check"></i> Welcome Back!</h3>
+            <p style="font-size: 13px; color: #A1A09A;">
+                Your existing account <strong style="color:#EDEDEC;">{{ session('email') }}</strong> is linked to this quote.
+            </p>
+        </div>
+
+        <a href="/login" class="btn login-btn">
+            <i class="bi bi-box-arrow-in-right"></i> Log In to View Your Quote
+        </a>
+    @else
+        <!-- No account info (fallback) -->
+        <div class="info-strip">
+            <i class="bi bi-clock"></i>
+            <span>Our team will contact you within <strong style="color:#EDEDEC;">24 hours</strong> to confirm details.</span>
+        </div>
+
+        <a href="/landing" class="btn">
+            <i class="bi bi-arrow-left"></i> Back to Home
+        </a>
+    @endif
 
     <a href="{{ route('quotes.request') }}" class="footer-link">
         Need another quote? Click here
