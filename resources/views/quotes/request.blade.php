@@ -120,6 +120,35 @@
             color: #777; cursor: not-allowed;
             border-color: rgba(255,255,255,0.04);
         }
+
+        /* Date input styling - make calendar icon visible */
+        .form-group input[type="date"] {
+            position: relative;
+            padding-right: 40px;
+        }
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.5) sepia(1) saturate(5) hue-rotate(350deg);
+            opacity: 0.8;
+            cursor: pointer;
+        }
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+            filter: invert(0.3) sepia(1) saturate(8) hue-rotate(350deg);
+        }
+        /* Custom calendar icon overlay */
+        .date-input-wrap {
+            position: relative;
+        }
+        .date-input-wrap .calendar-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #FFB800;
+            font-size: 16px;
+            pointer-events: none;
+            z-index: 2;
+        }
         .form-group .helper {
             font-size: 11px; margin-top: 6px;
             display: flex; align-items: center; gap: 4px;
@@ -418,15 +447,21 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="start_date">Start Date<span class="req">*</span></label>
-                        <input type="date" id="start_date" name="start_date"
-                               value="{{ old('start_date') }}" required
-                               min="{{ date('Y-m-d') }}">
+                        <div class="date-input-wrap">
+                            <input type="date" id="start_date" name="start_date"
+                                   value="{{ old('start_date') }}" required
+                                   min="{{ date('Y-m-d') }}">
+                            <i class="bi bi-calendar3 calendar-icon"></i>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="end_date">End Date<span class="req">*</span></label>
-                        <input type="date" id="end_date" name="end_date"
-                               value="{{ old('end_date') }}" required
-                               min="{{ date('Y-m-d') }}">
+                        <div class="date-input-wrap">
+                            <input type="date" id="end_date" name="end_date"
+                                   value="{{ old('end_date') }}" required
+                                   min="{{ date('Y-m-d') }}">
+                            <i class="bi bi-calendar3 calendar-icon"></i>
+                        </div>
                     </div>
                 </div>
 

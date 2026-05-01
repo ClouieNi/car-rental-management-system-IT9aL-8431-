@@ -41,39 +41,81 @@
         .floating-light {
             position: fixed;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(60px);
             pointer-events: none;
             z-index: 0;
         }
         .light-1 {
-            width: 400px; height: 400px;
-            background: rgba(255,184,0,0.05);
-            top: 20%; left: 10%;
-            animation: float 18s ease-in-out infinite;
+            width: 180px; height: 180px;
+            background: rgba(255,184,0,0.08);
+            top: 15%; left: 5%;
+            animation: float 12s ease-in-out infinite;
         }
         .light-2 {
-            width: 300px; height: 300px;
-            background: rgba(255,184,0,0.04);
-            top: 60%; right: 20%;
-            animation: float-slow 22s ease-in-out infinite;
+            width: 120px; height: 120px;
+            background: rgba(255,184,0,0.06);
+            top: 45%; right: 8%;
+            animation: float-slow 16s ease-in-out infinite;
         }
         .light-3 {
-            width: 500px; height: 500px;
-            background: rgba(255,140,0,0.03);
-            bottom: 10%; left: 40%;
-            animation: float 28s ease-in-out infinite;
+            width: 200px; height: 200px;
+            background: rgba(255,140,0,0.05);
+            bottom: 20%; left: 25%;
+            animation: float 20s ease-in-out infinite;
+        }
+        .light-4 {
+            width: 150px; height: 150px;
+            background: rgba(255,184,0,0.07);
+            top: 25%; right: 35%;
+            animation: float 14s ease-in-out infinite 2s;
+        }
+        .light-5 {
+            width: 100px; height: 100px;
+            background: rgba(255,200,0,0.09);
+            bottom: 35%; right: 5%;
+            animation: float-slow 18s ease-in-out infinite 1s;
+        }
+        .light-6 {
+            width: 220px; height: 220px;
+            background: rgba(255,160,0,0.04);
+            top: 70%; left: 60%;
+            animation: float 22s ease-in-out infinite 3s;
+        }
+        .light-7 {
+            width: 80px; height: 80px;
+            background: rgba(255,184,0,0.1);
+            top: 10%; left: 60%;
+            animation: float 10s ease-in-out infinite 4s;
+        }
+        .light-8 {
+            width: 140px; height: 140px;
+            background: rgba(255,140,0,0.06);
+            bottom: 10%; right: 40%;
+            animation: float-slow 15s ease-in-out infinite 2s;
+        }
+        .light-9 {
+            width: 110px; height: 110px;
+            background: rgba(255,184,0,0.07);
+            top: 55%; left: 15%;
+            animation: float 13s ease-in-out infinite 1s;
+        }
+        .light-10 {
+            width: 170px; height: 170px;
+            background: rgba(255,180,0,0.05);
+            bottom: 45%; left: 75%;
+            animation: float-slow 19s ease-in-out infinite 3s;
         }
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(30px, -20px) scale(1.05); }
-            50% { transform: translate(-20px, -40px) scale(1); }
-            75% { transform: translate(-40px, 10px) scale(0.95); }
+            25% { transform: translate(20px, -30px) scale(1.1); }
+            50% { transform: translate(-30px, -20px) scale(1); }
+            75% { transform: translate(-10px, 20px) scale(0.9); }
         }
         @keyframes float-slow {
             0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(-50px, 30px) scale(1.1); }
-            66% { transform: translate(20px, -20px) scale(0.95); }
+            33% { transform: translate(-40px, 20px) scale(1.15); }
+            66% { transform: translate(30px, -30px) scale(0.95); }
         }
 
         /* Top Nav */
@@ -458,6 +500,13 @@
 <div class="floating-light light-1"></div>
 <div class="floating-light light-2"></div>
 <div class="floating-light light-3"></div>
+<div class="floating-light light-4"></div>
+<div class="floating-light light-5"></div>
+<div class="floating-light light-6"></div>
+<div class="floating-light light-7"></div>
+<div class="floating-light light-8"></div>
+<div class="floating-light light-9"></div>
+<div class="floating-light light-10"></div>
 
 <!-- Navigation -->
 <nav class="nav">
