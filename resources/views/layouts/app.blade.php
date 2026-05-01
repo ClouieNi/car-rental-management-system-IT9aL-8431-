@@ -73,7 +73,7 @@
                 <i class="bi bi-receipt text-base w-5"></i> Transactions
                 @php $activeCount = \App\Models\Rental::active()->count(); @endphp
                 @if($activeCount > 0)
-                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $activeCount }}</span>
+                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $activeCount }}</span>
                 @endif
             </a>
             <a href="{{ route('rentals.create') }}" 
@@ -95,7 +95,7 @@
                 <i class="bi bi-file-earmark-text text-base w-5"></i> Quote Requests
                 @php $pendingQuotes = \App\Models\Quote::pending()->count(); @endphp
                 @if($pendingQuotes > 0)
-                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $pendingQuotes }}</span>
+                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $pendingQuotes }}</span>
                 @endif
             </a>
 
@@ -105,7 +105,7 @@
                 <i class="bi bi-chat-square-text text-base w-5"></i> Messages
                 @php $unread = \App\Models\CustomerMessage::where('is_read', false)->count(); @endphp
                 @if($unread > 0)
-                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $unread }}</span>
+                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $unread }}</span>
                 @endif
             </a>
         </nav>
