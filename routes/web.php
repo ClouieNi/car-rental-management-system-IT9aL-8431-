@@ -8,10 +8,19 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\SupplierController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // ── Auth Routes (Breeze) ───────────────────────────────────
 require __DIR__.'/auth.php';
+
+// Convenience: GET /logout so typing it in the URL bar works (POST /logout still used by buttons)
+Route::get('/logout', function () {
+    Auth::guard('web')->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout.get');
 
 // ── Public: Quote Request ──────────────────────────────────
 Route::get('/quote', [QuoteController::class, 'requestForm'])->name('quotes.request');
