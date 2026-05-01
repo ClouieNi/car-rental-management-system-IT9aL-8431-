@@ -15,8 +15,7 @@
         html { scroll-behavior: smooth; }
         body {
             font-family: 'Poppins', sans-serif;
-            background: #0A0A0A;
-            color: #EDEDEC;
+            background: #0A0A0A; color: #EDEDEC;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -416,7 +415,7 @@
         <a href="#fleet">Fleet</a>
         <a href="#features">Features</a>
         <a href="{{ route('login') }}">Sign In</a>
-        <a href="{{ route('quotes.request') }}" class="cta">
+        <a href="#quick-quote" class="cta">
             <i class="bi bi-send"></i> Get a Quote
         </a>
     </div>
@@ -434,16 +433,8 @@
             Self-drive &amp; chauffeured vehicles for every journey.<br>
             <strong>Affordable rates</strong>, well-maintained fleet, hassle-free booking — all under one roof.
         </p>
-        <div class="hero-actions">
-            <a href="{{ route('quotes.request') }}" class="btn-hero primary">
-                <i class="bi bi-send"></i> Get a Quote
-            </a>
-            <a href="{{ route('login') }}" class="btn-hero outline">
-                <i class="bi bi-box-arrow-in-right"></i> Sign In
-            </a>
-        </div>
         <div class="signin-hint">
-            <i class="bi bi-arrow-right"></i> Quick quote on the right — takes 30 seconds
+            <i class="bi bi-arrow-right"></i> Get your instant quote on the right →
         </div>
     </div>
 
