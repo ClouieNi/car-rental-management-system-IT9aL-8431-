@@ -451,7 +451,6 @@
                             <input type="date" id="start_date" name="start_date"
                                    value="{{ old('start_date') }}" required
                                    min="{{ date('Y-m-d') }}">
-                            <i class="bi bi-calendar3 calendar-icon"></i>
                         </div>
                     </div>
                     <div class="form-group">
@@ -460,7 +459,6 @@
                             <input type="date" id="end_date" name="end_date"
                                    value="{{ old('end_date') }}" required
                                    min="{{ date('Y-m-d') }}">
-                            <i class="bi bi-calendar3 calendar-icon"></i>
                         </div>
                     </div>
                 </div>
