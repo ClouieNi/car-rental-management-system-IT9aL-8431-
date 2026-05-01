@@ -27,12 +27,53 @@
             width: 800px; height: 800px;
             background: radial-gradient(circle, rgba(255,184,0,0.07) 0%, transparent 70%);
             pointer-events: none; z-index: 0;
+            animation: float-slow 20s ease-in-out infinite;
         }
         .bg-glow-2 {
             position: fixed; bottom: -30%; right: -10%;
             width: 600px; height: 600px;
             background: radial-gradient(circle, rgba(56,189,248,0.04) 0%, transparent 70%);
             pointer-events: none; z-index: 0;
+            animation: float 25s ease-in-out infinite;
+        }
+
+        /* Animated floating lights */
+        .floating-light {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .light-1 {
+            width: 400px; height: 400px;
+            background: rgba(255,184,0,0.05);
+            top: 20%; left: 10%;
+            animation: float 18s ease-in-out infinite;
+        }
+        .light-2 {
+            width: 300px; height: 300px;
+            background: rgba(255,184,0,0.04);
+            top: 60%; right: 20%;
+            animation: float-slow 22s ease-in-out infinite;
+        }
+        .light-3 {
+            width: 500px; height: 500px;
+            background: rgba(255,140,0,0.03);
+            bottom: 10%; left: 40%;
+            animation: float 28s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -20px) scale(1.05); }
+            50% { transform: translate(-20px, -40px) scale(1); }
+            75% { transform: translate(-40px, 10px) scale(0.95); }
+        }
+        @keyframes float-slow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-50px, 30px) scale(1.1); }
+            66% { transform: translate(20px, -20px) scale(0.95); }
         }
 
         /* Top Nav */
@@ -176,7 +217,8 @@
             color: #555; font-size: 14px;
         }
         .form-group input[type="email"],
-        .form-group input[type="password"] {
+        .form-group input[type="password"],
+        .form-group input[type="text"] {
             width: 100%;
             padding: 12px 14px 12px 42px;
             background: rgba(10,10,10,0.6);
@@ -191,6 +233,15 @@
             border-color: #FFB800;
             background: rgba(10,10,10,0.9);
             box-shadow: 0 0 0 3px rgba(255,184,0,0.1);
+        }
+
+        /* Override browser autofill styling */
+        .form-group input:-webkit-autofill,
+        .form-group input:-webkit-autofill:hover,
+        .form-group input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #141414 inset !important;
+            -webkit-text-fill-color: #EDEDEC !important;
+            transition: background-color 5000s ease-in-out 0s;
         }
         .form-group input::placeholder { color: #555; }
         .form-error {
@@ -404,6 +455,9 @@
 
 <div class="bg-glow"></div>
 <div class="bg-glow-2"></div>
+<div class="floating-light light-1"></div>
+<div class="floating-light light-2"></div>
+<div class="floating-light light-3"></div>
 
 <!-- Navigation -->
 <nav class="nav">
