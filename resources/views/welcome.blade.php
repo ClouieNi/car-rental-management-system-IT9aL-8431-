@@ -414,9 +414,8 @@
     <div class="nav-links">
         <a href="#fleet">Fleet</a>
         <a href="#features">Features</a>
-        <a href="{{ route('login') }}">Sign In</a>
-        <a href="#quick-quote" class="cta">
-            <i class="bi bi-send"></i> Get a Quote
+        <a href="{{ route('login') }}" class="cta">
+            <i class="bi bi-box-arrow-in-right"></i> Login
         </a>
     </div>
 </nav>
