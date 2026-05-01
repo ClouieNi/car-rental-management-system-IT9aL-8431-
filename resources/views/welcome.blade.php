@@ -241,6 +241,68 @@
             margin-bottom: 18px;
         }
 
+        /* ── Quick Quote Combobox ─────────────────────── */
+        .qq-combobox { position: relative; }
+        .qq-combobox .input-wrap input { padding-right: 42px; }
+        .qq-toggle {
+            position: absolute; top: 0; right: 0;
+            height: 42px; width: 38px;
+            background: transparent; border: none;
+            color: #A1A09A; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px;
+            transition: color .2s, transform .2s;
+        }
+        .qq-toggle:hover { color: #FFB800; }
+        .qq-toggle.open i { transform: rotate(180deg); }
+        .qq-panel {
+            position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+            z-index: 50;
+            background: #161615;
+            border: 1px solid rgba(255,184,0,0.2);
+            border-radius: 8px;
+            max-height: 220px; overflow-y: auto;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+            display: none;
+        }
+        .qq-panel.visible { display: block; }
+        .qq-panel::-webkit-scrollbar { width: 6px; }
+        .qq-panel::-webkit-scrollbar-track { background: #0A0A0A; }
+        .qq-panel::-webkit-scrollbar-thumb { background: rgba(255,184,0,0.2); border-radius: 4px; }
+        .qq-section {
+            font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
+            text-transform: uppercase; color: #FFB800;
+            padding: 6px 12px 4px;
+            background: rgba(255,184,0,0.04);
+            border-bottom: 1px solid rgba(255,184,0,0.08);
+        }
+        .qq-option {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 9px 12px;
+            font-size: 12px; color: #EDEDEC;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        .qq-option:hover, .qq-option.active {
+            background: rgba(255,184,0,0.1);
+            border-left-color: #FFB800;
+        }
+        .qq-option .km { font-size: 10px; color: #777; }
+        .qq-empty {
+            padding: 14px 12px; text-align: center;
+            color: #777; font-size: 11px; font-style: italic;
+        }
+        .qq-helper {
+            font-size: 11px; margin-top: 6px; min-height: 16px;
+            display: flex; align-items: center; gap: 4px;
+            color: #4ADE80;
+        }
+        .qq-admin-link {
+            display: block; text-align: center; margin-top: 18px;
+            color: #555; font-size: 11px;
+        }
+        .qq-admin-link:hover { color: #FFB800; }
+
         /* ── Fleet Showcase ────────────────────── */
         .section {
             position: relative; z-index: 1;
@@ -353,7 +415,7 @@
     <div class="nav-links">
         <a href="#fleet">Fleet</a>
         <a href="#features">Features</a>
-        <a href="#login">Sign In</a>
+        <a href="{{ route('login') }}">Sign In</a>
         <a href="{{ route('quotes.request') }}" class="cta">
             <i class="bi bi-send"></i> Get a Quote
         </a>
@@ -376,66 +438,67 @@
             <a href="{{ route('quotes.request') }}" class="btn-hero primary">
                 <i class="bi bi-send"></i> Get a Quote
             </a>
-            <a href="#login" class="btn-hero outline">
+            <a href="{{ route('login') }}" class="btn-hero outline">
                 <i class="bi bi-box-arrow-in-right"></i> Sign In
             </a>
         </div>
         <div class="signin-hint">
-            <i class="bi bi-arrow-right"></i> Are you an admin? Sign in on the right
+            <i class="bi bi-arrow-right"></i> Quick quote on the right — takes 30 seconds
         </div>
     </div>
 
-    <!-- Right: Login Form -->
-    <div class="hero-right" id="login">
+    <!-- Right: Quick Quote Form -->
+    <div class="hero-right" id="quick-quote">
         <div class="login-card">
-            <div class="lock-badge"><i class="bi bi-shield-lock"></i></div>
-            <h2>SIGN IN</h2>
-            <p class="subtitle">Login to access the management dashboard</p>
+            <div class="lock-badge" style="color:#FFB800;"><i class="bi bi-send"></i></div>
+            <h2>GET A QUOTE</h2>
+            <p class="subtitle">Tell us where you're heading — we'll show your price instantly.</p>
 
-            @if(session('status'))
-                <div class="session-status">{{ session('status') }}</div>
-            @endif
-
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
+            <form method="GET" action="{{ route('quotes.request') }}" id="quick-quote-form">
+                <div class="form-group">
+                    <label for="qq_name">Full Name</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-person icon"></i>
+                        <input id="qq_name" type="text" name="guest_name" required
+                               placeholder="Juan Dela Cruz">
+                    </div>
+                </div>
 
                 <div class="form-group">
-                    <label for="email">Email Address</label>
+                    <label for="qq_email">Email Address</label>
                     <div class="input-wrap">
                         <i class="bi bi-envelope icon"></i>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}"
-                               placeholder="you@example.com" required autofocus autocomplete="username">
+                        <input id="qq_email" type="email" name="guest_email" required
+                               placeholder="you@example.com">
                     </div>
-                    @error('email')
-                        <div class="form-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
-                    @enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-wrap">
-                        <i class="bi bi-key icon"></i>
-                        <input id="password" type="password" name="password"
-                               placeholder="••••••••" required autocomplete="current-password">
+                    <label for="qq_destination">Destination</label>
+                    <div class="qq-combobox" id="qq-combo">
+                        <div class="input-wrap">
+                            <i class="bi bi-geo-alt icon"></i>
+                            <input id="qq_destination" type="text" name="destination"
+                                   autocomplete="off"
+                                   placeholder="Type or click ↓ to browse...">
+                        </div>
+                        <button type="button" class="qq-toggle" id="qq-toggle" tabindex="-1">
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <div class="qq-panel" id="qq-panel"></div>
                     </div>
-                    @error('password')
-                        <div class="form-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-options">
-                    <label class="remember">
-                        <input type="checkbox" name="remember"> Remember me
-                    </label>
-                    @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="forgot-link">Forgot password?</a>
-                    @endif
+                    <input type="hidden" name="distance_km" id="qq_distance" value="0">
+                    <div class="qq-helper" id="qq-helper"></div>
                 </div>
 
                 <button type="submit" class="btn-signin">
-                    <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    Continue to Quote <i class="bi bi-arrow-right"></i>
                 </button>
             </form>
+
+            <a href="{{ route('login') }}" class="qq-admin-link">
+                Are you an admin? Sign in here
+            </a>
         </div>
     </div>
 </section>
@@ -518,6 +581,131 @@
 <footer class="footer">
     &copy; {{ date('Y') }} Cars ni Bai — Rental Management System
 </footer>
+
+<script>
+// ── Destination data (driving km from Davao City) ─────────────────────────
+const QQ_GROUPS = [
+    { region: 'Davao del Norte', items: [['Tagum City',55],['Panabo City',31],['Carmen',38],['Braulio Dujali',40],['Asuncion',70],['Kapalong',80],['San Isidro',85],['Talaingod',95],['New Corella',75],['Santo Tomas',45]] },
+    { region: 'Davao del Sur', items: [['Digos City',46],['Santa Cruz',42],['Hagonoy',60],['Bansalan',65],['Magsaysay',70],['Matanao',80],['Padada',55],['Sulop',75],['Kiblawan',85],['Malalag',90]] },
+    { region: 'Davao Oriental', items: [['Mati City',84],['Lupon',95],['Baganga',145],['Caraga',160],['Boston',170],['Cateel',185],['Manay',120],['Tarragona',130],['Governor Generoso',110]] },
+    { region: 'Davao de Oro', items: [['Nabunturan',90],['Compostela',75],['Maco',48],['Mabini',44],['Pantukan',55],['New Bataan',80],['Monkayo',100],['Montevista',110],['Laak',130],['Maragusan',120]] },
+    { region: 'Davao Occidental', items: [['Malita',145],['Don Marcelino',180],['Jose Abad Santos',220],['Sarangani (Davao Occ)',195],['Santa Maria',160]] },
+    { region: 'Samal Island', items: [['Samal Island',26]] },
+    { region: 'North Cotabato', items: [['Kidapawan City',45],['Makilala',85],['Kabacan',110],['Magpet',100],['Mlang',105],['Matalam',115],['Arakan',120],['Antipas',110],['President Roxas',125],['Pigkawayan',140],['Pikit',155],['Midsayap',145],['Alamada',135],['Libungan',150],['Banisilan',160],['Aleosan',140]] },
+    { region: 'South Cotabato', items: [['Koronadal City',100],['General Santos City',146],['Surallah',120],['Tupi',130],['Polomolok',140],['Norala',115],['Banga',125],['Lake Sebu',145],['Tampakan',140],['Tantangan',120],["T'boli",155]] },
+    { region: 'Sultan Kudarat', items: [['Tacurong City',130],['Isulan',140],['Kalamansig',195],['Lebak',180],['Bagumbayan',160],['Columbio',165],['Esperanza',150],['Lambayong',155],['Lutayan',170],['Palimbang',190],['President Quirino',145],['Sen. Ninoy Aquino',175]] },
+    { region: 'Sarangani', items: [['Alabel',135],['Malungon',90],['Glan',175],['Kiamba',160],['Malapatan',165],['Maasim',155],['Maitum',150]] },
+    { region: 'BARMM / Cotabato', items: [['Cotabato City',136],['Kakar',145],['Datu Odin Sinsuat',150],['Sultan Kudarat (Maguindanao)',155],['Buluan',160],['Upi',180]] },
+    { region: 'Agusan del Norte', items: [['Butuan City',201],['Cabadbaran City',215],['Nasipit',210],['Las Nieves',220],['Magallanes',225],['Tubay',220]] },
+    { region: 'Agusan del Sur', items: [['Prosperidad',230],['Bayugan City',240],['Bunawan',255],['Loreto',270],['Trento',220],['Veruela',260],['La Paz',245],['San Francisco',250],['Sibagat',265]] },
+    { region: 'Surigao del Norte', items: [['Surigao City',320],['Dapa (Siargao)',345],['Mainit',295],['Malimono',310],['Placer',305],['Tubod',300]] },
+    { region: 'Surigao del Sur', items: [['Tandag City',270],['Bislig City',230],['Cantilan',280],['Carrascal',265],['Cortes',255],['Hinatuan',240],['Lianga',245],['Lingig',250]] },
+    { region: 'Bukidnon', items: [['Malaybalay City',170],['Valencia City',185],['Manolo Fortich',195],['Maramag',180],['Kibawe',175],['Kalilangan',185],['Lantapan',180],['Impasugong',195],['San Fernando',190],['Cabanglasan',200],['Libona',205],['Talakag',210]] },
+    { region: 'Misamis Oriental', items: [['Cagayan de Oro City',175],['El Salvador City',185],['Gingoog City',230],['Tagoloan',180],['Opol',180],['Villanueva',182],['Jasaan',185],['Initao',195]] },
+    { region: 'Misamis Occidental', items: [['Ozamiz City',260],['Oroquieta City',290],['Tangub City',275],['Calamba',280],['Jimenez',285]] },
+    { region: 'Lanao', items: [['Iligan City',171],['Marawi City',163],['Bacolod (Lanao)',190],['Kapatagan',195]] },
+    { region: 'Camiguin', items: [['Mambajao (Camiguin)',240]] },
+    { region: 'Zamboanga Peninsula', items: [['Pagadian City',238],['Dipolog City',330],['Dapitan City',340],['Zamboanga City',390],['Ipil',370],['Molave',265],['Dumingag',280],['Mahayag',270],['Labangan',255]] },
+];
+const QQ_FLAT = [];
+QQ_GROUPS.forEach(g => g.items.forEach(([n,k]) => QQ_FLAT.push({ name:n, km:k, region:g.region })));
+
+function qqNorm(s){ return s.toLowerCase().trim().replace(/\s+city$/,'').replace(/[.,']/g,'').replace(/\s+/g,' '); }
+
+const $qqInput = document.getElementById('qq_destination');
+const $qqDist = document.getElementById('qq_distance');
+const $qqPanel = document.getElementById('qq-panel');
+const $qqToggle = document.getElementById('qq-toggle');
+const $qqHelper = document.getElementById('qq-helper');
+let qqActive = -1;
+let qqMatches = [];
+
+function qqFilter(q) {
+    if (!q || !q.trim()) return { grouped: true, groups: QQ_GROUPS };
+    const nq = qqNorm(q);
+    const pre = [], sub = [];
+    QQ_FLAT.forEach(d => {
+        const n = d.name.toLowerCase();
+        if (qqNorm(d.name).startsWith(nq) || n.startsWith(nq)) pre.push(d);
+        else if (n.includes(nq)) sub.push(d);
+    });
+    return { grouped: false, items: [...pre, ...sub] };
+}
+
+function qqRender(q) {
+    const r = qqFilter(q);
+    let html = '';
+    if (r.grouped) {
+        r.groups.forEach(g => {
+            html += `<div class="qq-section">${g.region}</div>`;
+            g.items.forEach(([n,k]) => {
+                html += `<div class="qq-option" data-name="${n}" data-km="${k}"><span>${n}</span><span class="km">${k} km</span></div>`;
+            });
+        });
+    } else if (r.items.length === 0) {
+        html = '<div class="qq-empty">No matches found</div>';
+    } else {
+        r.items.forEach(d => {
+            html += `<div class="qq-option" data-name="${d.name}" data-km="${d.km}"><span>${d.name} <small style="color:#555;">(${d.region})</small></span><span class="km">${d.km} km</span></div>`;
+        });
+    }
+    $qqPanel.innerHTML = html;
+    qqActive = -1;
+    qqMatches = [...$qqPanel.querySelectorAll('.qq-option')];
+}
+
+function qqOpen(){ qqRender($qqInput.value); $qqPanel.classList.add('visible'); $qqToggle.classList.add('open'); }
+function qqClose(){ $qqPanel.classList.remove('visible'); $qqToggle.classList.remove('open'); qqActive = -1; }
+function qqSetActive(i) {
+    qqMatches.forEach(el => el.classList.remove('active'));
+    if (i >= 0 && i < qqMatches.length) {
+        qqActive = i;
+        qqMatches[i].classList.add('active');
+        qqMatches[i].scrollIntoView({ block: 'nearest' });
+    }
+}
+function qqSelect(el) {
+    const name = el.dataset.name, km = parseInt(el.dataset.km, 10);
+    $qqInput.value = name;
+    $qqDist.value = km;
+    $qqHelper.innerHTML = `<i class="bi bi-check-circle"></i> ${km} km from Davao City`;
+    qqClose();
+}
+
+$qqInput.addEventListener('focus', qqOpen);
+$qqInput.addEventListener('click', qqOpen);
+$qqToggle.addEventListener('click', () => { $qqPanel.classList.contains('visible') ? qqClose() : ($qqInput.focus(), qqOpen()); });
+$qqInput.addEventListener('input', () => {
+    qqOpen();
+    // Try direct match for typed value
+    const nq = qqNorm($qqInput.value);
+    const exact = QQ_FLAT.find(d => qqNorm(d.name) === nq);
+    if (exact) {
+        $qqDist.value = exact.km;
+        $qqHelper.innerHTML = `<i class="bi bi-check-circle"></i> ${exact.km} km from Davao City`;
+    } else {
+        $qqDist.value = 0;
+        $qqHelper.innerHTML = '';
+    }
+});
+$qqInput.addEventListener('keydown', (e) => {
+    if (!$qqPanel.classList.contains('visible')) {
+        if (e.key === 'ArrowDown') { qqOpen(); e.preventDefault(); }
+        return;
+    }
+    if (e.key === 'ArrowDown') { qqSetActive(Math.min(qqActive + 1, qqMatches.length - 1)); e.preventDefault(); }
+    else if (e.key === 'ArrowUp') { qqSetActive(Math.max(qqActive - 1, 0)); e.preventDefault(); }
+    else if (e.key === 'Enter' && qqActive >= 0) { qqSelect(qqMatches[qqActive]); e.preventDefault(); }
+    else if (e.key === 'Escape') { qqClose(); }
+});
+$qqPanel.addEventListener('mousedown', (e) => {
+    const opt = e.target.closest('.qq-option');
+    if (opt) { e.preventDefault(); qqSelect(opt); }
+});
+document.addEventListener('click', (e) => {
+    if (!document.getElementById('qq-combo').contains(e.target)) qqClose();
+});
+</script>
 
 </body>
 </html>

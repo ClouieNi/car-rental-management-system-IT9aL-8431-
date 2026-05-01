@@ -361,13 +361,13 @@
                     <div class="form-group">
                         <label for="guest_name">Full Name<span class="req">*</span></label>
                         <input type="text" id="guest_name" name="guest_name"
-                               value="{{ old('guest_name') }}" required
+                               value="{{ old('guest_name', request('guest_name')) }}" required
                                placeholder="Juan Dela Cruz">
                     </div>
                     <div class="form-group">
                         <label for="guest_phone">Phone<span class="req">*</span></label>
                         <input type="text" id="guest_phone" name="guest_phone"
-                               value="{{ old('guest_phone') }}" required
+                               value="{{ old('guest_phone', request('guest_phone')) }}" required
                                placeholder="0917-xxx-xxxx">
                     </div>
                 </div>
@@ -375,7 +375,7 @@
                     <div class="form-group">
                         <label for="guest_email">Email<span class="req">*</span></label>
                         <input type="email" id="guest_email" name="guest_email"
-                               value="{{ old('guest_email') }}" required
+                               value="{{ old('guest_email', request('guest_email')) }}" required
                                placeholder="you@example.com">
                     </div>
                 </div>
@@ -444,7 +444,7 @@
                         <label for="destination">Destination</label>
                         <div class="combobox" id="destination-combo">
                             <input type="text" id="destination" name="destination"
-                                   value="{{ old('destination') }}"
+                                   value="{{ old('destination', request('destination')) }}"
                                    autocomplete="off"
                                    placeholder="Type or click ↓ to browse...">
                             <button type="button" class="combo-toggle" id="combo-toggle" tabindex="-1">
@@ -457,7 +457,7 @@
                     <div class="form-group">
                         <label for="distance_km">Estimated Distance (km)</label>
                         <input type="number" id="distance_km" name="distance_km"
-                               value="{{ old('distance_km', 0) }}" min="0"
+                               value="{{ old('distance_km', request('distance_km', 0)) }}" min="0"
                                placeholder="0" readonly>
                     </div>
                 </div>
