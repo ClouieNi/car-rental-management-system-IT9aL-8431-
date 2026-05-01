@@ -127,6 +127,70 @@
         .helper.success { color: #4ADE80; }
         .helper.warn { color: #F59E0B; }
 
+        /* ── Destination Combobox ────────────── */
+        .combobox { position: relative; }
+        .combobox input {
+            padding-right: 42px !important;
+        }
+        .combo-toggle {
+            position: absolute; top: 0; right: 0;
+            height: 44px; width: 40px;
+            background: transparent; border: none;
+            color: #A1A09A; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            transition: color .2s, transform .2s;
+        }
+        .combo-toggle:hover { color: #FFB800; }
+        .combo-toggle.open i { transform: rotate(180deg); }
+        .combo-toggle:disabled { cursor: not-allowed; opacity: 0.4; }
+
+        .combo-panel {
+            position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+            z-index: 50;
+            background: #161615;
+            border: 1px solid rgba(255,184,0,0.2);
+            border-radius: 8px;
+            max-height: 280px; overflow-y: auto;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+            display: none;
+            animation: comboFade .15s ease-out;
+        }
+        @keyframes comboFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+        .combo-panel.visible { display: block; }
+        .combo-panel::-webkit-scrollbar { width: 8px; }
+        .combo-panel::-webkit-scrollbar-track { background: #0A0A0A; }
+        .combo-panel::-webkit-scrollbar-thumb { background: rgba(255,184,0,0.2); border-radius: 4px; }
+        .combo-panel::-webkit-scrollbar-thumb:hover { background: rgba(255,184,0,0.4); }
+
+        .combo-section {
+            font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+            text-transform: uppercase; color: #FFB800;
+            padding: 8px 14px 4px;
+            background: rgba(255,184,0,0.04);
+            border-bottom: 1px solid rgba(255,184,0,0.08);
+        }
+        .combo-option {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 14px;
+            font-size: 13px; color: #EDEDEC;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background .12s, border-color .12s;
+        }
+        .combo-option:hover, .combo-option.active {
+            background: rgba(255,184,0,0.1);
+            border-left-color: #FFB800;
+        }
+        .combo-option .km {
+            font-size: 11px; color: #777; font-weight: 500;
+        }
+        .combo-option.active .km { color: #FFB800; }
+        .combo-empty {
+            padding: 16px 14px; text-align: center;
+            color: #777; font-size: 12px; font-style: italic;
+        }
+
         /* Davao City checkbox row */
         .davao-toggle {
             display: flex; align-items: center; gap: 12px;
@@ -378,9 +442,16 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="destination">Destination</label>
-                        <input type="text" id="destination" name="destination"
-                               value="{{ old('destination') }}"
-                               placeholder="e.g. Mati City, Tagum, General Santos">
+                        <div class="combobox" id="destination-combo">
+                            <input type="text" id="destination" name="destination"
+                                   value="{{ old('destination') }}"
+                                   autocomplete="off"
+                                   placeholder="Type or click ↓ to browse...">
+                            <button type="button" class="combo-toggle" id="combo-toggle" tabindex="-1">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div class="combo-panel" id="combo-panel"></div>
+                        </div>
                         <div class="helper" id="dest-helper" style="display:none;"></div>
                     </div>
                     <div class="form-group">
@@ -467,6 +538,159 @@
 
 <script>
 // ── Davao Distance Reference Table (driving km from Davao City) ────────────
+// Structured by region for the dropdown grouping
+const DESTINATION_GROUPS = [
+    { region: 'Davao del Norte', items: [
+        ['Tagum City', 'tagum', 55], ['Panabo City', 'panabo', 31], ['Carmen', 'carmen', 38],
+        ['Braulio Dujali', 'braulio dujali', 40], ['Asuncion', 'asuncion', 70],
+        ['Kapalong', 'kapalong', 80], ['San Isidro', 'san isidro', 85],
+        ['Talaingod', 'talaingod', 95], ['New Corella', 'new corella', 75],
+        ['Santo Tomas', 'santo tomas', 45],
+    ]},
+    { region: 'Davao del Sur', items: [
+        ['Digos City', 'digos', 46], ['Santa Cruz', 'santa cruz', 42],
+        ['Hagonoy', 'hagonoy', 60], ['Bansalan', 'bansalan', 65],
+        ['Magsaysay', 'magsaysay', 70], ['Matanao', 'matanao', 80],
+        ['Padada', 'padada', 55], ['Sulop', 'sulop', 75],
+        ['Kiblawan', 'kiblawan', 85], ['Malalag', 'malalag', 90],
+    ]},
+    { region: 'Davao Oriental', items: [
+        ['Mati City', 'mati', 84], ['Lupon', 'lupon', 95],
+        ['Baganga', 'baganga', 145], ['Caraga', 'caraga', 160],
+        ['Boston', 'boston', 170], ['Cateel', 'cateel', 185],
+        ['Manay', 'manay', 120], ['Tarragona', 'tarragona', 130],
+        ['Governor Generoso', 'governor generoso', 110],
+    ]},
+    { region: 'Davao de Oro', items: [
+        ['Nabunturan', 'nabunturan', 90], ['Compostela', 'compostela', 75],
+        ['Maco', 'maco', 48], ['Mabini', 'mabini', 44],
+        ['Pantukan', 'pantukan', 55], ['New Bataan', 'new bataan', 80],
+        ['Monkayo', 'monkayo', 100], ['Montevista', 'montevista', 110],
+        ['Laak', 'laak', 130], ['Maragusan', 'maragusan', 120],
+    ]},
+    { region: 'Davao Occidental', items: [
+        ['Malita', 'malita', 145], ['Don Marcelino', 'don marcelino', 180],
+        ['Jose Abad Santos', 'jose abad santos', 220],
+        ['Sarangani (Davao Occ)', 'sarangani', 195],
+        ['Santa Maria', 'santa maria', 160],
+    ]},
+    { region: 'Island Garden City of Samal', items: [
+        ['Samal Island', 'samal', 26],
+    ]},
+    { region: 'North Cotabato', items: [
+        ['Kidapawan City', 'kidapawan', 45], ['Makilala', 'makilala', 85],
+        ['Kabacan', 'kabacan', 110], ['Magpet', 'magpet', 100],
+        ['Mlang', 'mlang', 105], ['Matalam', 'matalam', 115],
+        ['Arakan', 'arakan', 120], ['Antipas', 'antipas', 110],
+        ['President Roxas', 'president roxas', 125],
+        ['Pigkawayan', 'pigkawayan', 140], ['Pikit', 'pikit', 155],
+        ['Midsayap', 'midsayap', 145], ['Alamada', 'alamada', 135],
+        ['Libungan', 'libungan', 150], ['Banisilan', 'banisilan', 160],
+        ['Aleosan', 'aleosan', 140],
+    ]},
+    { region: 'South Cotabato', items: [
+        ['Koronadal City', 'koronadal', 100],
+        ['General Santos City', 'general santos', 146],
+        ['Surallah', 'surallah', 120], ['Tupi', 'tupi', 130],
+        ['Polomolok', 'polomolok', 140], ['Norala', 'norala', 115],
+        ['Banga', 'banga', 125], ['Lake Sebu', 'lake sebu', 145],
+        ['Tampakan', 'tampakan', 140], ['Tantangan', 'tantangan', 120],
+        ["T'boli", 'tboli', 155],
+    ]},
+    { region: 'Sultan Kudarat', items: [
+        ['Tacurong City', 'tacurong', 130], ['Isulan', 'isulan', 140],
+        ['Kalamansig', 'kalamansig', 195], ['Lebak', 'lebak', 180],
+        ['Bagumbayan', 'bagumbayan', 160], ['Columbio', 'columbio', 165],
+        ['Esperanza', 'esperanza', 150], ['Lambayong', 'lambayong', 155],
+        ['Lutayan', 'lutayan', 170], ['Palimbang', 'palimbang', 190],
+        ['President Quirino', 'president quirino', 145],
+        ['Sen. Ninoy Aquino', 'sen ninoy aquino', 175],
+    ]},
+    { region: 'Sarangani', items: [
+        ['Alabel', 'alabel', 135], ['Malungon', 'malungon', 90],
+        ['Glan', 'glan', 175], ['Kiamba', 'kiamba', 160],
+        ['Malapatan', 'malapatan', 165], ['Maasim', 'maasim', 155],
+        ['Maitum', 'maitum', 150],
+    ]},
+    { region: 'BARMM / Cotabato', items: [
+        ['Cotabato City', 'cotabato', 136], ['Kakar', 'kakar', 145],
+        ['Datu Odin Sinsuat', 'datu odin sinsuat', 150],
+        ['Sultan Kudarat (Maguindanao)', 'sultan kudarat', 155],
+        ['Buluan', 'buluan', 160], ['Upi', 'upi', 180],
+    ]},
+    { region: 'Agusan del Norte', items: [
+        ['Butuan City', 'butuan', 201], ['Cabadbaran City', 'cabadbaran', 215],
+        ['Nasipit', 'nasipit', 210], ['Las Nieves', 'las nieves', 220],
+        ['Magallanes', 'magallanes', 225], ['Tubay', 'tubay', 220],
+    ]},
+    { region: 'Agusan del Sur', items: [
+        ['Prosperidad', 'prosperidad', 230], ['Bayugan City', 'bayugan', 240],
+        ['Bunawan', 'bunawan', 255], ['Loreto', 'loreto', 270],
+        ['Trento', 'trento', 220], ['Veruela', 'veruela', 260],
+        ['La Paz', 'la paz', 245], ['San Francisco', 'san francisco', 250],
+        ['Sibagat', 'sibagat', 265],
+    ]},
+    { region: 'Surigao del Norte', items: [
+        ['Surigao City', 'surigao', 320], ['Dapa (Siargao)', 'dapa', 345],
+        ['Mainit', 'mainit', 295], ['Malimono', 'malimono', 310],
+        ['Placer', 'placer', 305], ['Tubod', 'tubod', 300],
+    ]},
+    { region: 'Surigao del Sur', items: [
+        ['Tandag City', 'tandag', 270], ['Bislig City', 'bislig', 230],
+        ['Cantilan', 'cantilan', 280], ['Carrascal', 'carrascal', 265],
+        ['Cortes', 'cortes', 255], ['Hinatuan', 'hinatuan', 240],
+        ['Lianga', 'lianga', 245], ['Lingig', 'lingig', 250],
+    ]},
+    { region: 'Bukidnon', items: [
+        ['Malaybalay City', 'malaybalay', 170], ['Valencia City', 'valencia', 185],
+        ['Manolo Fortich', 'manolo fortich', 195], ['Maramag', 'maramag', 180],
+        ['Kibawe', 'kibawe', 175], ['Kalilangan', 'kalilangan', 185],
+        ['Lantapan', 'lantapan', 180], ['Impasugong', 'impasugong', 195],
+        ['San Fernando', 'san fernando', 190], ['Cabanglasan', 'cabanglasan', 200],
+        ['Libona', 'libona', 205], ['Talakag', 'talakag', 210],
+    ]},
+    { region: 'Misamis Oriental', items: [
+        ['Cagayan de Oro City', 'cagayan de oro', 175],
+        ['El Salvador City', 'el salvador', 185], ['Gingoog City', 'gingoog', 230],
+        ['Tagoloan', 'tagoloan', 180], ['Opol', 'opol', 180],
+        ['Villanueva', 'villanueva', 182], ['Jasaan', 'jasaan', 185],
+        ['Initao', 'initao', 195],
+    ]},
+    { region: 'Misamis Occidental', items: [
+        ['Ozamiz City', 'ozamiz', 260], ['Oroquieta City', 'oroquieta', 290],
+        ['Tangub City', 'tangub', 275], ['Calamba', 'calamba', 280],
+        ['Jimenez', 'jimenez', 285],
+    ]},
+    { region: 'Lanao', items: [
+        ['Iligan City', 'iligan', 171], ['Marawi City', 'marawi', 163],
+        ['Bacolod (Lanao)', 'bacolod', 190], ['Kapatagan', 'kapatagan', 195],
+    ]},
+    { region: 'Camiguin', items: [
+        ['Mambajao (Camiguin)', 'mambajao', 240],
+    ]},
+    { region: 'Zamboanga Peninsula', items: [
+        ['Pagadian City', 'pagadian', 238], ['Dipolog City', 'dipolog', 330],
+        ['Dapitan City', 'dapitan', 340], ['Zamboanga City', 'zamboanga', 390],
+        ['Ipil', 'ipil', 370], ['Molave', 'molave', 265],
+        ['Dumingag', 'dumingag', 280], ['Mahayag', 'mahayag', 270],
+        ['Labangan', 'labangan', 255],
+    ]},
+];
+
+// Flat list for typeahead (with synonyms)
+const DESTINATIONS = [];
+DESTINATION_GROUPS.forEach(g => {
+    g.items.forEach(([name, key, km]) => {
+        DESTINATIONS.push({ name, key, km, region: g.region });
+    });
+});
+// Synonyms
+const SYNONYMS = {
+    'gensan': 'general santos', 'gen santos': 'general santos',
+    'cdo': 'cagayan de oro', 'samal island': 'samal', 'igacos': 'samal',
+    'siargao': 'dapa',
+};
+
 const DAVAO_DISTANCES = {
     // Davao del Norte
     'tagum': 55, 'panabo': 31, 'carmen': 38, 'braulio dujali': 40, 'asuncion': 70,
@@ -534,12 +758,17 @@ const DAVAO_DISTANCES = {
     'ipil': 370, 'molave': 265, 'dumingag': 280, 'mahayag': 270, 'labangan': 255,
 };
 
-function lookupDistance(input) {
-    if (!input) return null;
-    let key = input.toLowerCase().trim()
+function normalizeKey(input) {
+    return input.toLowerCase().trim()
         .replace(/\s+city$/, '')
         .replace(/\s+/g, ' ')
-        .replace(/[.,]/g, '');
+        .replace(/[.,']/g, '');
+}
+
+function lookupDistance(input) {
+    if (!input) return null;
+    let key = normalizeKey(input);
+    if (SYNONYMS[key]) key = SYNONYMS[key];
     return DAVAO_DISTANCES[key] ?? null;
 }
 
@@ -557,17 +786,21 @@ const $breakdown = document.getElementById('breakdown-card');
 
 // ── Davao toggle ───────────────────────────────────────────────────────────
 function applyDavaoToggle() {
+    const toggleBtn = document.getElementById('combo-toggle');
     if ($davao.checked) {
         $destination.value = 'Within Davao City';
         $destination.disabled = true;
+        if (toggleBtn) toggleBtn.disabled = true;
         $distance.value = 0;
         $distance.readOnly = true;
         $destHelper.style.display = 'flex';
         $destHelper.className = 'helper success';
         $destHelper.innerHTML = '<i class="bi bi-check-circle"></i> No distance surcharge';
+        if (typeof closePanel === 'function') closePanel();
     } else {
         if ($destination.value === 'Within Davao City') $destination.value = '';
         $destination.disabled = false;
+        if (toggleBtn) toggleBtn.disabled = false;
         $distance.value = 0;
         $distance.readOnly = true;
         $destHelper.style.display = 'none';
@@ -575,23 +808,132 @@ function applyDavaoToggle() {
 }
 $davao.addEventListener('change', applyDavaoToggle);
 
-// ── Destination → distance auto-fill ───────────────────────────────────────
+// ── Destination Combobox (autocomplete + dropdown) ────────────────────
+const $comboToggle = document.getElementById('combo-toggle');
+const $comboPanel = document.getElementById('combo-panel');
+let activeIndex = -1;
+let currentMatches = [];
+
+function filterDestinations(query) {
+    if (!query || !query.trim()) {
+        // Return all, grouped by region
+        return { grouped: true, groups: DESTINATION_GROUPS };
+    }
+    const q = normalizeKey(query);
+    const prefix = [];
+    const substring = [];
+    DESTINATIONS.forEach(d => {
+        const k = d.key;
+        const n = d.name.toLowerCase();
+        if (k.startsWith(q) || n.startsWith(q)) prefix.push(d);
+        else if (k.includes(q) || n.includes(q)) substring.push(d);
+    });
+    return { grouped: false, items: [...prefix, ...substring] };
+}
+
+function renderPanel(query) {
+    const result = filterDestinations(query);
+    let html = '';
+    if (result.grouped) {
+        result.groups.forEach(g => {
+            html += `<div class="combo-section">${g.region}</div>`;
+            g.items.forEach(([name, key, km]) => {
+                html += `<div class="combo-option" data-name="${name}" data-km="${km}">`
+                     + `<span>${name}</span><span class="km">${km} km</span></div>`;
+            });
+        });
+    } else if (result.items.length === 0) {
+        html = '<div class="combo-empty">No matches. Type the destination manually.</div>';
+    } else {
+        result.items.forEach(d => {
+            html += `<div class="combo-option" data-name="${d.name}" data-km="${d.km}">`
+                 + `<span>${d.name} <small style="color:#555;">(${d.region})</small></span>`
+                 + `<span class="km">${d.km} km</span></div>`;
+        });
+    }
+    $comboPanel.innerHTML = html;
+    activeIndex = -1;
+    currentMatches = [...$comboPanel.querySelectorAll('.combo-option')];
+}
+
+function openPanel() {
+    if ($davao.checked) return;
+    renderPanel($destination.value);
+    $comboPanel.classList.add('visible');
+    $comboToggle.classList.add('open');
+}
+function closePanel() {
+    $comboPanel.classList.remove('visible');
+    $comboToggle.classList.remove('open');
+    activeIndex = -1;
+}
+function setActive(i) {
+    currentMatches.forEach(el => el.classList.remove('active'));
+    if (i >= 0 && i < currentMatches.length) {
+        activeIndex = i;
+        currentMatches[i].classList.add('active');
+        currentMatches[i].scrollIntoView({ block: 'nearest' });
+    }
+}
+function selectOption(el) {
+    const name = el.dataset.name;
+    const km = parseInt(el.dataset.km, 10);
+    $destination.value = name;
+    $distance.value = km;
+    $distance.readOnly = true;
+    $destHelper.style.display = 'flex';
+    $destHelper.className = 'helper success';
+    $destHelper.innerHTML = `<i class="bi bi-check-circle"></i> ${km} km from Davao City`;
+    closePanel();
+}
+
+$destination.addEventListener('focus', openPanel);
+$destination.addEventListener('click', openPanel);
+$comboToggle.addEventListener('click', () => {
+    if ($comboPanel.classList.contains('visible')) closePanel();
+    else { $destination.focus(); openPanel(); }
+});
+
 $destination.addEventListener('input', () => {
     if ($davao.checked) return;
+    openPanel();
+    // Also try direct lookup for the typed value
     const km = lookupDistance($destination.value);
     if (km !== null) {
         $distance.value = km;
         $distance.readOnly = true;
         $destHelper.style.display = 'flex';
         $destHelper.className = 'helper success';
-        $destHelper.innerHTML = `<i class="bi bi-check-circle"></i> Distance auto-filled: ${km} km from Davao City`;
+        $destHelper.innerHTML = `<i class="bi bi-check-circle"></i> ${km} km from Davao City`;
     } else {
         $distance.value = 0;
         $distance.readOnly = false;
         $destHelper.style.display = 'flex';
         $destHelper.className = 'helper warn';
-        $destHelper.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Destination not in our reference table — please type the distance manually';
+        $destHelper.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Pick from the list or type distance manually';
     }
+});
+
+$destination.addEventListener('keydown', (e) => {
+    if (!$comboPanel.classList.contains('visible')) {
+        if (e.key === 'ArrowDown') { openPanel(); e.preventDefault(); }
+        return;
+    }
+    if (e.key === 'ArrowDown') { setActive(Math.min(activeIndex + 1, currentMatches.length - 1)); e.preventDefault(); }
+    else if (e.key === 'ArrowUp') { setActive(Math.max(activeIndex - 1, 0)); e.preventDefault(); }
+    else if (e.key === 'Enter') {
+        if (activeIndex >= 0) { selectOption(currentMatches[activeIndex]); e.preventDefault(); }
+    }
+    else if (e.key === 'Escape') { closePanel(); }
+});
+
+$comboPanel.addEventListener('mousedown', (e) => {
+    const opt = e.target.closest('.combo-option');
+    if (opt) { e.preventDefault(); selectOption(opt); }
+});
+
+document.addEventListener('click', (e) => {
+    if (!document.getElementById('destination-combo').contains(e.target)) closePanel();
 });
 
 // ── Calculate Quote ────────────────────────────────────────────────────────

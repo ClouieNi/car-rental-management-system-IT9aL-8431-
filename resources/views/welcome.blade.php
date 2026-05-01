@@ -353,8 +353,9 @@
     <div class="nav-links">
         <a href="#fleet">Fleet</a>
         <a href="#features">Features</a>
-        <a href="#login" class="cta">
-            <i class="bi bi-box-arrow-in-right"></i> Sign In
+        <a href="#login">Sign In</a>
+        <a href="{{ route('quotes.request') }}" class="cta">
+            <i class="bi bi-send"></i> Get a Quote
         </a>
     </div>
 </nav>
@@ -372,15 +373,15 @@
             <strong>Affordable rates</strong>, well-maintained fleet, hassle-free booking — all under one roof.
         </p>
         <div class="hero-actions">
-            <a href="#login" class="btn-hero primary">
-                <i class="bi bi-box-arrow-in-right"></i> Sign In
-            </a>
-            <a href="{{ route('quotes.request') }}" class="btn-hero outline">
+            <a href="{{ route('quotes.request') }}" class="btn-hero primary">
                 <i class="bi bi-send"></i> Get a Quote
+            </a>
+            <a href="#login" class="btn-hero outline">
+                <i class="bi bi-box-arrow-in-right"></i> Sign In
             </a>
         </div>
         <div class="signin-hint">
-            <i class="bi bi-arrow-right"></i> Don't have an account? Request a quote instead
+            <i class="bi bi-arrow-right"></i> Are you an admin? Sign in on the right
         </div>
     </div>
 
