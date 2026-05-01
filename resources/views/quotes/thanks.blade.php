@@ -107,16 +107,16 @@
 <div class="card">
     <div class="icon-wrap"><i class="bi bi-check-lg"></i></div>
 
-    <h1>QUOTE <span class="gold">SUBMITTED</span></h1>
+    <h1>BOOKING <span class="gold">RECEIVED</span></h1>
 
     <p class="message">
-        Thank you for your interest in <strong>Cars ni Bai</strong>!<br>
-        We've received your quote request and will get back to you shortly.
+        Thank you for booking with <strong>Cars ni Bai</strong>!<br>
+        Your booking request has been submitted and is now under review.
     </p>
 
     <div class="info-strip">
         <i class="bi bi-clock"></i>
-        <span>Our team will contact you within <strong style="color:#EDEDEC;">24 hours</strong> via the email or phone you provided.</span>
+        <span>Our team will contact you within <strong style="color:#EDEDEC;">24 hours</strong> to confirm details and finalize your reservation.</span>
     </div>
 
     <a href="/login" class="btn">
@@ -124,7 +124,7 @@
     </a>
 
     <a href="{{ route('quotes.request') }}" class="footer-link">
-        Need to submit another quote? Click here
+        Need another quote? Click here
     </a>
 </div>
 
