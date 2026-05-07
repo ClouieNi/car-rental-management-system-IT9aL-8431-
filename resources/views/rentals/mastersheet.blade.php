@@ -124,8 +124,67 @@
                 <th>Payment</th>
                 <th>Status</th>
             </tr>
+            <!-- Filter Row -->
+            <tr style="background: rgba(255,184,0,0.05);">
+                <td style="padding: 8px;"></td>
+                <td style="padding: 8px;">
+                    <input type="text" name="customer_filter" placeholder="Filter customer..." value="{{ request('customer_filter') }}"
+                           style="width: 100%; padding: 4px 8px; font-size: 12px; background: var(--dark-200); border: 1px solid var(--border); border-radius: 4px; color: var(--cream);">
+                </td>
+                <td style="padding: 8px;">
+                    <input type="text" name="car_filter" placeholder="Filter car..." value="{{ request('car_filter') }}"
+                           style="width: 100%; padding: 4px 8px; font-size: 12px; background: var(--dark-200); border: 1px solid var(--border); border-radius: 4px; color: var(--cream);">
+                </td>
+                <td style="padding: 8px;">
+                    <select name="supplier_filter" style="width: 100%; padding: 4px 8px; font-size: 12px; background: var(--dark-200); border: 1px solid var(--border); border-radius: 4px; color: var(--cream);">
+                        <option value="">All</option>
+                        @foreach($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}" {{ request('supplier_filter') == $supplier->id ? 'selected' : '' }}>
+                                {{ $supplier->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </td>
+                <td style="padding: 8px;"></td>
+                <td style="padding: 8px;"></td>
+                <td style="padding: 8px;"></td>
+                <td style="padding: 8px;"></td>
+                <td style="padding: 8px;"></td>
+                <td style="padding: 8px;">
+                    <select name="payment_filter" style="width: 100%; padding: 4px 8px; font-size: 12px; background: var(--dark-200); border: 1px solid var(--border); border-radius: 4px; color: var(--cream);">
+                        <option value="">All</option>
+                        <option value="paid" {{ request('payment_filter') === 'paid' ? 'selected' : '' }}>Paid</option>
+                        <option value="partial" {{ request('payment_filter') === 'partial' ? 'selected' : '' }}>Partial</option>
+                        <option value="unpaid" {{ request('payment_filter') === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+                    </select>
+                </td>
+                <td style="padding: 8px;">
+                    <select name="status_filter" style="width: 100%; padding: 4px 8px; font-size: 12px; background: var(--dark-200); border: 1px solid var(--border); border-radius: 4px; color: var(--cream);">
+                        <option value="">All</option>
+                        <option value="reserved" {{ request('status_filter') === 'reserved' ? 'selected' : '' }}>Reserved</option>
+                        <option value="ongoing" {{ request('status_filter') === 'ongoing' ? 'selected' : '' }}>Ongoing</option>
+                        <option value="completed" {{ request('status_filter') === 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="cancelled" {{ request('status_filter') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                    </select>
+                </td>
+            </tr>
         </thead>
         <tbody>
+            <script>
+                // Auto-submit filter form when any filter input changes
+                document.querySelectorAll('input[name^="customer_filter"], input[name^="car_filter"], select[name^="supplier_filter"], select[name^="payment_filter"], select[name^="status_filter"]').forEach(input => {
+                    input.addEventListener('change', function() {
+                        // Build URL with filter parameters
+                        const params = new URLSearchParams(window.location.search);
+                        if (this.value) {
+                            params.set(this.name, this.value);
+                        } else {
+                            params.delete(this.name);
+                        }
+                        window.location.href = window.location.pathname + '?' + params.toString();
+                    });
+                });
+            </script>
             @forelse($rentals as $rental)
             @php
                 $isPartner = $rental->car && $rental->car->supplier && $rental->car->supplier->isPartnerOwned();
