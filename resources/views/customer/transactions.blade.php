@@ -8,23 +8,29 @@
         <p class="text-gray-400">View all your rental transactions and their status</p>
     </div>
 
-    <!-- Filters -->
-    <div class="mb-6 flex flex-wrap gap-2">
-        <a href="{{ route('customer.transactions') }}" 
-           class="px-4 py-2 rounded-lg text-sm font-medium transition {{ !request('status') ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
-            All
-        </a>
-        <a href="{{ route('customer.transactions', ['status' => 'ongoing']) }}" 
-           class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'ongoing' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
-            Ongoing
-        </a>
-        <a href="{{ route('customer.transactions', ['status' => 'reserved']) }}" 
-           class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'reserved' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
-            Reserved
-        </a>
-        <a href="{{ route('customer.transactions', ['status' => 'completed']) }}" 
-           class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'completed' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
-            Completed
+    <!-- Filters and Action -->
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('customer.transactions') }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium transition {{ !request('status') ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
+                All
+            </a>
+            <a href="{{ route('customer.transactions', ['status' => 'ongoing']) }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'ongoing' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
+                Ongoing
+            </a>
+            <a href="{{ route('customer.transactions', ['status' => 'reserved']) }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'reserved' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
+                Reserved
+            </a>
+            <a href="{{ route('customer.transactions', ['status' => 'completed']) }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'completed' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
+                Completed
+            </a>
+        </div>
+        <a href="/quote" class="inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-dark font-bold py-2 px-4 rounded-lg transition text-sm">
+            <i class="bi bi-plus-lg"></i>
+            <span>Get a Quote</span>
         </a>
     </div>
 
@@ -97,16 +103,12 @@
                 </div>
             </div>
         @empty
-            <div class="bg-dark-100 border border-white/10 rounded-xl py-16 px-12 text-center mb-8">
+            <div class="bg-dark-100 border border-white/10 rounded-xl py-16 px-12 text-center">
                 <div class="w-16 h-16 bg-dark-200 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="bi bi-receipt text-gray-500 text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-cream mb-2">No transactions yet</h3>
-                <p class="text-gray-500 mb-6">You haven't made any rental bookings yet.</p>
-                <a href="/quote" class="inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-6 rounded-lg transition">
-                    <i class="bi bi-plus-lg"></i>
-                    <span>Get a Quote</span>
-                </a>
+                <p class="text-gray-500">You haven't made any rental bookings yet.</p>
             </div>
         @endforelse
     </div>

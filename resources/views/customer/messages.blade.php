@@ -77,7 +77,8 @@
                             <i class="bi bi-chat-square-text text-gray-500 text-2xl"></i>
                         </div>
                         <h3 class="text-lg font-semibold text-cream mb-2">No messages yet</h3>
-                        <p class="text-gray-500">Start a conversation with us for any inquiries.</p>
+                        <p class="text-gray-500 mb-6">Start a conversation with us for any inquiries.</p>
+                        <div class="h-4"></div>
                     </div>
                 @endif
             </div>
