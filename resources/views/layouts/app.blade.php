@@ -51,63 +51,91 @@
 
         <!-- Navigation -->
         <nav class="flex-1 py-4 overflow-y-auto">
-            <div class="px-5 py-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Overview</div>
-            <a href="{{ route('dashboard') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('dashboard') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-grid-1x2 text-base w-5"></i> Dashboard
-            </a>
+            @if(auth()->user()->role === 'customer')
+                {{-- CUSTOMER NAVIGATION --}}
+                <div class="px-5 py-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Overview</div>
+                <a href="{{ route('customer.dashboard') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('customer.dashboard') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-grid-1x2 text-base w-5"></i> Dashboard
+                </a>
 
-            <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Fleet</div>
-            <a href="{{ route('cars.index') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('cars.*') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-car-front text-base w-5"></i> Fleet Management
-            </a>
-            <a href="{{ route('suppliers.index') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('suppliers.*') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-building text-base w-5"></i> Suppliers
-            </a>
+                <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">My Account</div>
+                <a href="{{ route('customer.transactions') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('customer.transactions') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-receipt text-base w-5"></i> Transactions
+                    @php $myActiveRentals = \App\Models\Rental::forCustomer(auth()->id())->active()->count(); @endphp
+                    @if($myActiveRentals > 0)
+                        <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $myActiveRentals }}</span>
+                    @endif
+                </a>
+                <a href="{{ route('customer.messages') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('customer.messages') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-chat-square-text text-base w-5"></i> Messages
+                    @php $myUnread = \App\Models\CustomerMessage::where('user_id', auth()->id())->whereNotNull('admin_reply')->where('is_read', false)->count(); @endphp
+                    @if($myUnread > 0)
+                        <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $myUnread }}</span>
+                    @endif
+                </a>
+            @else
+                {{-- ADMIN NAVIGATION --}}
+                <div class="px-5 py-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Overview</div>
+                <a href="{{ route('dashboard') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('dashboard') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-grid-1x2 text-base w-5"></i> Dashboard
+                </a>
 
-            <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Rentals</div>
-            <a href="{{ route('rentals.index') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('rentals.index') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-receipt text-base w-5"></i> Transactions
-                @php $activeCount = \App\Models\Rental::active()->count(); @endphp
-                @if($activeCount > 0)
-                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $activeCount }}</span>
-                @endif
-            </a>
-            <a href="{{ route('rentals.create') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('rentals.create') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-plus-circle text-base w-5"></i> New Rental
-            </a>
-            <a href="{{ route('rentals.calendar') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('rentals.calendar') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-calendar3 text-base w-5"></i> Calendar
-            </a>
-            <a href="{{ route('rentals.mastersheet') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('rentals.mastersheet') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-table text-base w-5"></i> Master Sheet
-            </a>
+                <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Fleet</div>
+                <a href="{{ route('cars.index') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('cars.*') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-car-front text-base w-5"></i> Fleet Management
+                </a>
+                <a href="{{ route('suppliers.index') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('suppliers.*') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-building text-base w-5"></i> Suppliers
+                </a>
 
-            <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Quotes</div>
-            <a href="{{ route('quotes.index') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('quotes.*') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-file-earmark-text text-base w-5"></i> Quote Requests
-                @php $pendingQuotes = \App\Models\Quote::pending()->count(); @endphp
-                @if($pendingQuotes > 0)
-                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $pendingQuotes }}</span>
-                @endif
-            </a>
+                <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Rentals</div>
+                <a href="{{ route('rentals.index') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('rentals.index') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-receipt text-base w-5"></i> Transactions
+                    @php $activeCount = \App\Models\Rental::active()->count(); @endphp
+                    @if($activeCount > 0)
+                        <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $activeCount }}</span>
+                    @endif
+                </a>
+                <a href="{{ route('rentals.create') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('rentals.create') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-plus-circle text-base w-5"></i> New Rental
+                </a>
+                <a href="{{ route('rentals.calendar') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('rentals.calendar') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-calendar3 text-base w-5"></i> Calendar
+                </a>
+                <a href="{{ route('rentals.mastersheet') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('rentals.mastersheet') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-table text-base w-5"></i> Master Sheet
+                </a>
 
-            <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Customers</div>
-            <a href="{{ route('messages.index') }}" 
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('messages.*') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                <i class="bi bi-chat-square-text text-base w-5"></i> Messages
-                @php $unread = \App\Models\CustomerMessage::where('is_read', false)->count(); @endphp
-                @if($unread > 0)
-                    <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $unread }}</span>
-                @endif
-            </a>
+                <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Quotes</div>
+                <a href="{{ route('quotes.index') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('quotes.*') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-file-earmark-text text-base w-5"></i> Quote Requests
+                    @php $pendingQuotes = \App\Models\Quote::pending()->count(); @endphp
+                    @if($pendingQuotes > 0)
+                        <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $pendingQuotes }}</span>
+                    @endif
+                </a>
+
+                <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Customers</div>
+                <a href="{{ route('messages.index') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('messages.*') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-chat-square-text text-base w-5"></i> Messages
+                    @php $unread = \App\Models\CustomerMessage::where('is_read', false)->count(); @endphp
+                    @if($unread > 0)
+                        <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $unread }}</span>
+                    @endif
+                </a>
+            @endif
         </nav>
 
         <!-- User Card -->

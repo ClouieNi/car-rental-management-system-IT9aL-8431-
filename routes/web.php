@@ -104,14 +104,10 @@ Route::middleware(['auth'])->group(function () {
     // ── CUSTOMER PORTAL ──────────────────────────────────
     Route::prefix('my')->name('customer.')->group(function () {
         Route::get('/dashboard',        [CustomerController::class, 'dashboard'])->name('dashboard');
-        Route::get('/rentals',          [CustomerController::class, 'rentals'])->name('rentals');
+        Route::get('/transactions',     [CustomerController::class, 'transactions'])->name('transactions');
         Route::get('/rentals/{rental}', [CustomerController::class, 'rentalShow'])->name('rental-show');
         Route::post('/rentals/{rental}/cancel-request', [CustomerController::class, 'requestCancellation'])->name('rental.cancel-request');
-        
-        // Customer Document Upload
-        Route::get('/rentals/{rental}/documents', [CustomerController::class, 'documentsForm'])->name('rental.documents');
-        Route::post('/rentals/{rental}/documents', [CustomerController::class, 'uploadDocuments'])->name('rental.upload-documents');
-        
+
         Route::get('/messages',         [CustomerController::class, 'messages'])->name('messages');
         Route::post('/messages',        [CustomerController::class, 'sendMessage'])->name('send-message');
     });

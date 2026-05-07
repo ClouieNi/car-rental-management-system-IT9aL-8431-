@@ -145,6 +145,9 @@ class QuoteController extends Controller
             ]
         );
 
+        // Link quote to user account
+        $quote->update(['user_id' => $user->id]);
+
         // If user already existed, generate a new temp password for display
         if (!$user->wasRecentlyCreated) {
             $tempPassword = null; // Don't show password for existing accounts

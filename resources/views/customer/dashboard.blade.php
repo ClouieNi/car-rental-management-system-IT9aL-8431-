@@ -1,107 +1,181 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">My Bookings</h1>
-
-    <!-- Book New Vehicle Button -->
+<div class="p-6 lg:p-8">
+    <!-- Header -->
     <div class="mb-8">
-        <a href="{{ route('book.create') }}" class="inline-block bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-6 rounded-lg transition">
-            + Book a New Vehicle
+        <h1 class="text-3xl font-bold text-cream mb-2">Welcome back, {{ auth()->user()->name }}</h1>
+        <p class="text-gray-400">Here's an overview of your account activity</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <!-- Active Rentals -->
+        <div class="bg-dark-100 border border-white/10 rounded-xl p-5 hover:border-gold/30 transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center">
+                    <i class="bi bi-car-front text-gold text-lg"></i>
+                </div>
+                @if($activeRentalsCount > 0)
+                    <span class="px-2 py-1 bg-gold/20 text-gold text-xs font-semibold rounded">{{ $activeRentalsCount }} Active</span>
+                @endif
+            </div>
+            <div class="text-2xl font-bold text-cream">{{ $totalRentalsCount }}</div>
+            <div class="text-sm text-gray-500">Total Rentals</div>
+        </div>
+
+        <!-- Pending Quotes -->
+        <div class="bg-dark-100 border border-white/10 rounded-xl p-5 hover:border-gold/30 transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 bg-yellow-500/10 rounded-lg flex items-center justify-center">
+                    <i class="bi bi-file-earmark-text text-yellow-500 text-lg"></i>
+                </div>
+                @if($pendingQuotesCount > 0)
+                    <span class="px-2 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-semibold rounded">{{ $pendingQuotesCount }} Pending</span>
+                @endif
+            </div>
+            <div class="text-2xl font-bold text-cream">{{ $recentQuotes->count() }}</div>
+            <div class="text-sm text-gray-500">Total Quotes</div>
+        </div>
+
+        <!-- Unread Messages -->
+        <div class="bg-dark-100 border border-white/10 rounded-xl p-5 hover:border-gold/30 transition-all">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                    <i class="bi bi-chat-square-text text-blue-500 text-lg"></i>
+                </div>
+                @if($unreadMessagesCount > 0)
+                    <span class="px-2 py-1 bg-blue-500/20 text-blue-500 text-xs font-semibold rounded">{{ $unreadMessagesCount }} New</span>
+                @endif
+            </div>
+            <div class="text-2xl font-bold text-cream">{{ $unreadMessagesCount }}</div>
+            <div class="text-sm text-gray-500">Unread Messages</div>
+        </div>
+
+        <!-- Quick Action -->
+        <a href="/landing" class="bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30 rounded-xl p-5 hover:border-gold/50 transition-all group">
+            <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center group-hover:bg-gold/30 transition-all">
+                    <i class="bi bi-plus-lg text-gold text-lg"></i>
+                </div>
+                <i class="bi bi-arrow-right text-gold"></i>
+            </div>
+            <div class="text-lg font-bold text-cream">Get a Quote</div>
+            <div class="text-sm text-gray-400">Request a new rental</div>
         </a>
     </div>
 
-    <!-- Pending Approvals -->
-    @if(isset($pending) && $pending->count() > 0)
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Pending Approval ({{ $pending->count() }})</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($pending as $rental)
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="font-semibold text-gray-800">{{ $rental->car->brand }} {{ $rental->car->model }}</span>
-                            <span class="px-2 py-1 bg-yellow-200 text-yellow-900 text-xs font-semibold rounded">Pending</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-2">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d, Y') }}</p>
-                        <p class="text-lg font-bold text-gray-800 mb-3">${{ number_format($rental->total_cost, 2) }}</p>
-                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-gold hover:underline text-sm">View Details</a>
-                    </div>
-                @endforeach
+    <!-- Recent Activity Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Quotes -->
+        <div class="bg-dark-100 border border-white/10 rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-cream">Recent Quotes</h2>
+                <a href="/landing" class="text-sm text-gold hover:text-gold-light">Get New Quote</a>
             </div>
-        </div>
-    @endif
 
-    <!-- Approved Bookings -->
-    @if(isset($approved) && $approved->count() > 0)
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Approved Bookings ({{ $approved->count() }})</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($approved as $rental)
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="font-semibold text-gray-800">{{ $rental->car->brand }} {{ $rental->car->model }}</span>
-                            <span class="px-2 py-1 bg-green-200 text-green-900 text-xs font-semibold rounded">Approved</span>
+            @if($recentQuotes->count() > 0)
+                <div class="space-y-3">
+                    @foreach($recentQuotes as $quote)
+                        <div class="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-dark-200 rounded-lg flex items-center justify-center">
+                                    <i class="bi bi-car-front text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-cream">{{ $quote->car->brand }} {{ $quote->car->model }}</div>
+                                    <div class="text-sm text-gray-500">{{ $quote->created_at->format('M d, Y') }}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-semibold text-cream">${{ number_format($quote->total_estimate, 0) }}</div>
+                                @php
+                                    $statusColors = [
+                                        'pending' => 'bg-yellow-500/20 text-yellow-500',
+                                        'accepted' => 'bg-green-500/20 text-green-500',
+                                        'rejected' => 'bg-red-500/20 text-red-500',
+                                        'sent' => 'bg-blue-500/20 text-blue-500',
+                                        'expired' => 'bg-gray-500/20 text-gray-400',
+                                        'converted' => 'bg-gold/20 text-gold',
+                                    ];
+                                    $statusClass = $statusColors[$quote->status] ?? 'bg-gray-500/20 text-gray-400';
+                                @endphp
+                                <span class="px-2 py-0.5 text-xs font-medium rounded {{ $statusClass }}">
+                                    {{ ucfirst($quote->status) }}
+                                </span>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-2">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d, Y') }}</p>
-                        <p class="text-lg font-bold text-gray-800 mb-3">${{ number_format($rental->total_cost, 2) }}</p>
-                        @if($rental->payment_status === 'unpaid')
-                            <p class="text-xs text-orange-600 font-semibold mb-2">Payment due</p>
-                        @endif
-                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-gold hover:underline text-sm">View Details</a>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-8">
+                    <div class="w-12 h-12 bg-dark-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="bi bi-inbox text-gray-500 text-xl"></i>
                     </div>
-                @endforeach
-            </div>
+                    <p class="text-gray-500 mb-4">No quotes yet</p>
+                    <a href="/landing" class="inline-block bg-gold hover:bg-gold-dark text-dark font-bold py-2 px-4 rounded-lg transition text-sm">
+                        Request a Quote
+                    </a>
+                </div>
+            @endif
         </div>
-    @endif
 
-    <!-- Ongoing Rentals -->
-    @if(isset($ongoing) && $ongoing->count() > 0)
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Currently Renting ({{ $ongoing->count() }})</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($ongoing as $rental)
-                    <div class="bg-gold-muted border border-gold/20 rounded-lg p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="font-semibold text-gray-800">{{ $rental->car->brand }} {{ $rental->car->model }}</span>
-                            <span class="px-2 py-1 bg-gold/20 text-gold text-xs font-semibold rounded">Ongoing</span>
+        <!-- Recent Rentals -->
+        <div class="bg-dark-100 border border-white/10 rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-cream">Recent Rentals</h2>
+                <a href="{{ route('customer.transactions') }}" class="text-sm text-gold hover:text-gold-light">View All</a>
+            </div>
+
+            @if($recentRentals->count() > 0)
+                <div class="space-y-3">
+                    @foreach($recentRentals as $rental)
+                        <div class="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-dark-200 rounded-lg flex items-center justify-center">
+                                    <i class="bi bi-car-front text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-cream">{{ $rental->car->brand }} {{ $rental->car->model }}</div>
+                                    <div class="text-sm text-gray-500">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d') }}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-semibold text-cream">${{ number_format($rental->total_cost, 0) }}</div>
+                                @php
+                                    $rentalStatusColors = [
+                                        'reserved' => 'bg-blue-500/20 text-blue-500',
+                                        'ongoing' => 'bg-gold/20 text-gold',
+                                        'completed' => 'bg-green-500/20 text-green-500',
+                                        'cancelled' => 'bg-red-500/20 text-red-500',
+                                    ];
+                                    $rentalStatusClass = $rentalStatusColors[$rental->status] ?? 'bg-gray-500/20 text-gray-400';
+                                @endphp
+                                <span class="px-2 py-0.5 text-xs font-medium rounded {{ $rentalStatusClass }}">
+                                    {{ ucfirst($rental->status) }}
+                                </span>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-2">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d, Y') }}</p>
-                        <p class="text-lg font-bold text-gray-800 mb-3">${{ number_format($rental->total_cost, 2) }}</p>
-                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-gold hover:underline text-sm">View Details</a>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-8">
+                    <div class="w-12 h-12 bg-dark-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="bi bi-car-front text-gray-500 text-xl"></i>
                     </div>
-                @endforeach
-            </div>
+                    <p class="text-gray-500 mb-4">No rentals yet</p>
+                    <p class="text-sm text-gray-600">Your approved quotes will appear here</p>
+                </div>
+            @endif
         </div>
-    @endif
+    </div>
 
-    <!-- Completed Rentals -->
-    @if(isset($completed) && $completed->count() > 0)
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Completed Rentals ({{ $completed->count() }})</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($completed as $rental)
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="font-semibold text-gray-800">{{ $rental->car->brand }} {{ $rental->car->model }}</span>
-                            <span class="px-2 py-1 bg-gray-300 text-gray-900 text-xs font-semibold rounded">Completed</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-2">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d, Y') }}</p>
-                        <p class="text-lg font-bold text-gray-800 mb-3">${{ number_format($rental->total_cost, 2) }}</p>
-                        <a href="{{ route('customer.rental-show', $rental) }}" class="text-gold hover:underline text-sm">View Details</a>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
-
-    <!-- No Bookings -->
-    @if((!isset($pending) || $pending->count() === 0) && (!isset($approved) || $approved->count() === 0) && (!isset($ongoing) || $ongoing->count() === 0) && (!isset($completed) || $completed->count() === 0))
-        <div class="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-            <p class="text-gray-600 text-lg mb-4">You don't have any bookings yet.</p>
-            <a href="{{ route('book.create') }}" class="inline-block bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-6 rounded-lg transition">
-                Book Your First Vehicle
-            </a>
-        </div>
-    @endif
+    <!-- Quick Actions -->
+    <div class="mt-6 flex flex-wrap gap-3">
+        <a href="{{ route('customer.messages') }}" class="inline-flex items-center gap-2 bg-dark-100 hover:bg-dark-200 border border-white/10 text-cream px-4 py-2.5 rounded-lg transition">
+            <i class="bi bi-chat-square-text text-gold"></i>
+            <span>Contact Support</span>
+        </a>
+    </div>
 </div>
 @endsection

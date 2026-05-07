@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Car, CustomerMessage, Driver, Rental};
+use App\Models\{Car, CustomerMessage, Driver, Quote, Rental};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -11,15 +11,45 @@ class CustomerController extends Controller
 {
     public function dashboard()
     {
-        $user          = auth()->user();
-        $activeRentals = Rental::forCustomer($user->id)->active()->with('car')->get();
-        $pastRentals   = Rental::forCustomer($user->id)->completed()
-                               ->with('car')->orderByDesc('end_date')->limit(5)->get();
-        $unreadReplies = CustomerMessage::where('user_id', $user->id)
-                                        ->whereNotNull('admin_reply')
-                                        ->where('is_read', false)->count();
+        $user = auth()->user();
 
-        return view('customer.dashboard', compact('activeRentals', 'pastRentals', 'unreadReplies'));
+        // Stats
+        $activeRentalsCount = Rental::forCustomer($user->id)->active()->count();
+        $totalRentalsCount = Rental::forCustomer($user->id)->count();
+        $pendingQuotesCount = Quote::where('user_id', $user->id)->where('status', 'pending')->count();
+        $unreadMessagesCount = CustomerMessage::where('user_id', $user->id)
+                                               ->whereNotNull('admin_reply')
+                                               ->where('is_read', false)->count();
+
+        // Recent Activity
+        $recentRentals = Rental::forCustomer($user->id)
+                               ->with('car')
+                               ->orderByDesc('created_at')
+                               ->limit(3)
+                               ->get();
+        $recentQuotes = Quote::where('user_id', $user->id)
+                             ->with('car')
+                             ->orderByDesc('created_at')
+                             ->limit(3)
+                             ->get();
+
+        return view('customer.dashboard', compact(
+            'activeRentalsCount', 'totalRentalsCount', 'pendingQuotesCount', 'unreadMessagesCount',
+            'recentRentals', 'recentQuotes'
+        ));
+    }
+
+    public function transactions(Request $request)
+    {
+        $query = Rental::forCustomer(auth()->id())->with('car');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $rentals = $query->orderByDesc('start_date')->paginate(10)->withQueryString();
+
+        return view('customer.transactions', compact('rentals'));
     }
 
     public function rentals()
