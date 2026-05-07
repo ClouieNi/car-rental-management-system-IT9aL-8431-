@@ -72,7 +72,7 @@
                         </div>
                     @endif
                 @else
-                    <div class="p-12 text-center">
+                    <div class="py-20 px-12 text-center">
                         <div class="w-16 h-16 bg-dark-200 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="bi bi-chat-square-text text-gray-500 text-2xl"></i>
                         </div>

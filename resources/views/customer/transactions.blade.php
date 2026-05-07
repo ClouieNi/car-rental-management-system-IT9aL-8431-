@@ -97,7 +97,7 @@
                 </div>
             </div>
         @empty
-            <div class="bg-dark-100 border border-white/10 rounded-xl p-12 text-center mb-6">
+            <div class="bg-dark-100 border border-white/10 rounded-xl py-16 px-12 text-center mb-8">
                 <div class="w-16 h-16 bg-dark-200 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="bi bi-receipt text-gray-500 text-2xl"></i>
                 </div>
@@ -110,6 +110,9 @@
             </div>
         @endforelse
     </div>
+
+    <!-- Bottom Spacer -->
+    <div class="h-6"></div>
 
     <!-- Pagination -->
     @if($rentals->hasPages())
