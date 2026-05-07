@@ -291,6 +291,20 @@
             display: flex; align-items: center; gap: 4px;
         }
 
+        /* Davao City toggle */
+        .qq-davao-toggle {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255,184,0,0.05);
+            border: 1px solid rgba(255,184,0,0.15);
+            border-radius: 8px;
+            margin-bottom: 18px;
+            cursor: pointer; user-select: none;
+        }
+        .qq-davao-toggle input { accent-color: #FFB800; width: 18px; height: 18px; cursor: pointer; }
+        .qq-davao-toggle .label-main { font-size: 14px; font-weight: 600; color: #EDEDEC; }
+        .qq-davao-toggle .label-sub { font-size: 11px; color: #A1A09A; }
+
         .form-options {
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 24px;
@@ -584,6 +598,15 @@
                     <div class="qq-helper" id="qq-helper"></div>
                 </div>
 
+                <!-- Davao City toggle -->
+                <label class="qq-davao-toggle" id="qq-davao-toggle">
+                    <input type="checkbox" id="qq_within_davao" name="within_davao">
+                    <div>
+                        <div class="label-main"><i class="bi bi-geo-alt-fill"></i> Within Davao City</div>
+                        <div class="label-sub">Check this if your destination is inside Davao City — no distance surcharge applies.</div>
+                    </div>
+                </label>
+
                 <button type="submit" class="btn-signin">
                     Continue to Quote <i class="bi bi-arrow-right"></i>
                 </button>
@@ -797,6 +820,34 @@ $qqPanel.addEventListener('mousedown', (e) => {
 });
 document.addEventListener('click', (e) => {
     if (!document.getElementById('qq-combo').contains(e.target)) qqClose();
+});
+
+// ── Davao City Toggle ──────────────────────────────────────────────────────
+const $qqDavao = document.getElementById('qq_within_davao');
+const $qqToggleBtn = document.getElementById('qq-toggle');
+
+function applyQqDavaoToggle() {
+    if ($qqDavao.checked) {
+        $qqInput.value = 'Within Davao City';
+        $qqInput.disabled = true;
+        if ($qqToggleBtn) $qqToggleBtn.disabled = true;
+        $qqDist.value = 0;
+        $qqHelper.innerHTML = '<i class="bi bi-check-circle"></i> No distance surcharge';
+        qqClose();
+    } else {
+        if ($qqInput.value === 'Within Davao City') $qqInput.value = '';
+        $qqInput.disabled = false;
+        if ($qqToggleBtn) $qqToggleBtn.disabled = false;
+        $qqDist.value = 0;
+        $qqHelper.innerHTML = '';
+    }
+}
+
+$qqDavao.addEventListener('change', applyQqDavaoToggle);
+
+// Before form submit, re-enable destination if it was disabled so it submits
+document.getElementById('quick-quote-form').addEventListener('submit', () => {
+    if ($qqInput.disabled) $qqInput.disabled = false;
 });
 </script>
 

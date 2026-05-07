@@ -465,7 +465,7 @@
 
                 <!-- Davao City toggle -->
                 <label class="davao-toggle">
-                    <input type="checkbox" id="within_davao" {{ old('within_davao') ? 'checked' : '' }}>
+                    <input type="checkbox" id="within_davao" {{ old('within_davao') || request('within_davao') ? 'checked' : '' }}>
                     <div>
                         <div class="label-main"><i class="bi bi-geo-alt-fill"></i> Within Davao City</div>
                         <div class="label-sub">Check this if your destination is inside Davao City — no distance surcharge applies.</div>
