@@ -53,15 +53,14 @@
         </div>
 
         <!-- Quick Action -->
-        <a href="/landing" class="bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30 rounded-xl p-5 hover:border-gold/50 transition-all group">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center group-hover:bg-gold/30 transition-all">
-                    <i class="bi bi-plus-lg text-gold text-lg"></i>
+        <a href="/quote" class="bg-dark-100 border border-gold/30 rounded-xl p-5 hover:border-gold/50 hover:bg-gold/5 transition-all group">
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-8 h-8 bg-gold/20 rounded-lg flex items-center justify-center group-hover:bg-gold/30 transition-all">
+                    <i class="bi bi-plus-lg text-gold"></i>
                 </div>
-                <i class="bi bi-arrow-right text-gold"></i>
             </div>
-            <div class="text-lg font-bold text-cream">Get a Quote</div>
-            <div class="text-sm text-gray-400">Request a new rental</div>
+            <div class="text-sm font-bold text-cream">Get a Quote</div>
+            <div class="text-xs text-gray-400">Request a rental</div>
         </a>
     </div>
 
@@ -71,7 +70,7 @@
         <div class="bg-dark-100 border border-white/10 rounded-xl p-6">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-cream">Recent Quotes</h2>
-                <a href="/landing" class="text-sm text-gold hover:text-gold-light">Get New Quote</a>
+                <a href="/quote" class="text-sm text-gold hover:text-gold-light">Get New Quote</a>
             </div>
 
             @if($recentQuotes->count() > 0)
@@ -112,10 +111,7 @@
                     <div class="w-12 h-12 bg-dark-200 rounded-full flex items-center justify-center mx-auto mb-3">
                         <i class="bi bi-inbox text-gray-500 text-xl"></i>
                     </div>
-                    <p class="text-gray-500 mb-4">No quotes yet</p>
-                    <a href="/landing" class="inline-block bg-gold hover:bg-gold-dark text-dark font-bold py-2 px-4 rounded-lg transition text-sm">
-                        Request a Quote
-                    </a>
+                    <p class="text-gray-500">No quotes yet</p>
                 </div>
             @endif
         </div>
@@ -163,8 +159,7 @@
                     <div class="w-12 h-12 bg-dark-200 rounded-full flex items-center justify-center mx-auto mb-3">
                         <i class="bi bi-car-front text-gray-500 text-xl"></i>
                     </div>
-                    <p class="text-gray-500 mb-4">No rentals yet</p>
-                    <p class="text-sm text-gray-600">Your approved quotes will appear here</p>
+                    <p class="text-gray-500">No rentals yet</p>
                 </div>
             @endif
         </div>

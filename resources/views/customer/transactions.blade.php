@@ -97,13 +97,13 @@
                 </div>
             </div>
         @empty
-            <div class="bg-dark-100 border border-white/10 rounded-xl p-12 text-center">
+            <div class="bg-dark-100 border border-white/10 rounded-xl p-12 text-center mb-6">
                 <div class="w-16 h-16 bg-dark-200 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="bi bi-receipt text-gray-500 text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-cream mb-2">No transactions yet</h3>
                 <p class="text-gray-500 mb-6">You haven't made any rental bookings yet.</p>
-                <a href="/landing" class="inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-6 rounded-lg transition">
+                <a href="/quote" class="inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-dark font-bold py-3 px-6 rounded-lg transition">
                     <i class="bi bi-plus-lg"></i>
                     <span>Get a Quote</span>
                 </a>
