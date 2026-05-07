@@ -108,7 +108,8 @@
                     <i class="bi bi-receipt text-gray-500 text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-semibold text-cream mb-2">No transactions yet</h3>
-                <p class="text-gray-500">You haven't made any rental bookings yet.</p>
+                <p class="text-gray-500 mb-8">You haven't made any rental bookings yet.</p>
+                <div class="h-4"></div>
             </div>
         @endforelse
     </div>
