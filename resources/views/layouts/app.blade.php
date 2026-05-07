@@ -163,10 +163,6 @@
                 <i class="bi bi-list text-lg"></i>
             </button>
             
-            <div class="flex-1">
-                <h1 class="font-display text-[22px] tracking-wider leading-none">@yield('page-title', 'Dashboard')</h1>
-                <div class="text-[11px] text-gray-500 mt-0.5">@yield('breadcrumb', 'Cars ni Bai')</div>
-            </div>
             
             <div class="flex items-center gap-2.5">
             </div>
