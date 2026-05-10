@@ -23,6 +23,11 @@ Route::get('/logout', function () {
     return redirect('/login');
 })->name('logout.get');
 
+// ── Root → Landing ─────────────────────────────────────────
+Route::get('/', function () {
+    return redirect('/landing');
+});
+
 // ── Public: Landing & Quote Request ────────────────────────
 Route::get('/landing', function () {
     return view('welcome');
