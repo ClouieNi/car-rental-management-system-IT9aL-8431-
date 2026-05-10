@@ -120,6 +120,37 @@
             color: #777; cursor: not-allowed;
             border-color: rgba(255,255,255,0.04);
         }
+        /* Custom file input */
+        .file-upload-wrapper { position: relative; }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer; z-index: 2;
+        }
+        .file-upload-label {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px;
+            background: rgba(10,10,10,0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .file-upload-label:hover, .file-upload-wrapper:focus-within .file-upload-label {
+            border-color: #FFB800;
+            background: rgba(10,10,10,0.9);
+            box-shadow: 0 0 0 3px rgba(255,184,0,0.1);
+        }
+        .file-upload-btn {
+            display: inline-flex; align-items: center; gap-6px; gap: 6px;
+            padding: 6px 14px;
+            background: #FFB800; color: #0A0A0A;
+            border-radius: 6px; font-size: 12px; font-weight: 700;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .file-upload-name {
+            font-size: 13px; color: #A1A09A;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
 
         /* Date input styling - make calendar icon visible */
         .form-group input[type="date"] {
@@ -502,10 +533,15 @@
                 <div class="form-row single">
                     <div class="form-group">
                         <label for="license_file">Upload Driver's License / Valid ID<span class="req">*</span></label>
-                        <input type="file" id="license_file" name="license_file"
-                               accept="image/jpeg,image/png,application/pdf" required
-                               style="padding: 10px 14px; cursor: pointer;">
-                        <span style="font-size:11px; color:#A1A09A; margin-top:6px;"><i class="bi bi-info-circle"></i> Accepted: JPG, PNG, PDF — Max 5MB</span>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="license_file" name="license_file"
+                                   accept="image/jpeg,image/png,application/pdf" required>
+                            <div class="file-upload-label">
+                                <span class="file-upload-btn"><i class="bi bi-upload"></i> Choose File</span>
+                                <span class="file-upload-name" id="license-file-name">No file chosen</span>
+                            </div>
+                        </div>
+                        <span style="font-size:11px; color:#A1A09A; margin-top:6px; display:block;"><i class="bi bi-info-circle"></i> Accepted: JPG, PNG, PDF — Max 5MB</span>
                     </div>
                 </div>
             </div>
@@ -1044,6 +1080,13 @@ $btnBook.addEventListener('click', () => {
 
 // Initialize state on load
 applyDavaoToggle();
+
+// File input — show selected filename
+document.getElementById('license_file').addEventListener('change', function() {
+    const nameEl = document.getElementById('license-file-name');
+    nameEl.textContent = this.files.length ? this.files[0].name : 'No file chosen';
+    nameEl.style.color = this.files.length ? '#EDEDEC' : '#A1A09A';
+});
 </script>
 
 </body>

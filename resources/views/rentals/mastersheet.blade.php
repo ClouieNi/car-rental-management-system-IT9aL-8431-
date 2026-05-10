@@ -170,21 +170,6 @@
             </tr>
         </thead>
         <tbody>
-            <script>
-                // Auto-submit filter form when any filter input changes
-                document.querySelectorAll('input[name^="customer_filter"], input[name^="car_filter"], select[name^="supplier_filter"], select[name^="payment_filter"], select[name^="status_filter"]').forEach(input => {
-                    input.addEventListener('change', function() {
-                        // Build URL with filter parameters
-                        const params = new URLSearchParams(window.location.search);
-                        if (this.value) {
-                            params.set(this.name, this.value);
-                        } else {
-                            params.delete(this.name);
-                        }
-                        window.location.href = window.location.pathname + '?' + params.toString();
-                    });
-                });
-            </script>
             @forelse($rentals as $rental)
             @php
                 $isPartner = $rental->car && $rental->car->supplier && $rental->car->supplier->isPartnerOwned();
@@ -252,5 +237,21 @@
         </tbody>
     </table>
 </div>
+
+@push('scripts')
+<script>
+    document.querySelectorAll('input[name^="customer_filter"], input[name^="car_filter"], select[name^="supplier_filter"], select[name^="payment_filter"], select[name^="status_filter"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const params = new URLSearchParams(window.location.search);
+            if (this.value) {
+                params.set(this.name, this.value);
+            } else {
+                params.delete(this.name);
+            }
+            window.location.href = window.location.pathname + '?' + params.toString();
+        });
+    });
+</script>
+@endpush
 
 @endsection
