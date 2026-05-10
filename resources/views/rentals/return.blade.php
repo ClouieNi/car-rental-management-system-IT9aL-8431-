@@ -108,6 +108,37 @@
     align-items: end;
     margin-bottom: 12px;
 }
+.return-form input[type="text"],
+.return-form input[type="number"],
+.return-form textarea {
+    background: var(--black-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    width: 100%;
+    font-size: 14px;
+    transition: border-color 0.15s;
+}
+.return-form input[type="text"]::placeholder,
+.return-form input[type="number"]::placeholder,
+.return-form textarea::placeholder {
+    color: var(--text-dim);
+}
+.return-form input[type="text"]:focus,
+.return-form input[type="number"]:focus,
+.return-form textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(255,184,0,0.1);
+}
+.charge-input {
+    background: var(--black-3) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 8px 12px !important;
+}
 </style>
 @endpush
 
@@ -156,7 +187,7 @@
             
             <div class="form-group">
                 <label>Damage Description</label>
-                <textarea name="damage_description" rows="3" placeholder="Describe the damage details..."></textarea>
+                <textarea name="damage_description" rows="3" placeholder="Describe the damage details..." class="form-control"></textarea>
             </div>
             
             <div class="form-group">
@@ -206,11 +237,11 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Mileage (Returned)</label>
-                    <input type="number" name="mileage_returned" placeholder="e.g., 50000">
+                    <input type="number" name="mileage_returned" placeholder="e.g., 50000" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Mileage (Start)</label>
-                    <input type="number" name="mileage_start" placeholder="If recorded">
+                    <input type="number" name="mileage_start" placeholder="If recorded" class="form-control">
                 </div>
             </div>
         </div>
@@ -224,7 +255,7 @@
                     <label>Fuel Charge</label>
                     <small style="color: var(--text-muted); display: block;">If fuel not full</small>
                 </div>
-                <input type="number" name="fuel_charge" value="0" step="0.01" class="charge-input" style="max-width: 150px;">
+                <input type="number" name="fuel_charge" value="0" step="0.01" class="charge-input" style="max-width: 150px; background: var(--black-3); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); padding: 8px 12px;">
             </div>
             
             <div class="charge-row">
@@ -232,7 +263,7 @@
                     <label>Late Return Charge</label>
                     <small style="color: var(--text-muted); display: block;">If returned after due date</small>
                 </div>
-                <input type="number" name="late_return_charge" value="0" step="0.01" class="charge-input" style="max-width: 150px;">
+                <input type="number" name="late_return_charge" value="0" step="0.01" class="charge-input" style="max-width: 150px; background: var(--black-3); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); padding: 8px 12px;">
             </div>
             
             <div class="charge-row">
@@ -240,15 +271,15 @@
                     <label>Cleaning Charge</label>
                     <small style="color: var(--text-muted); display: block;">If excessive cleaning needed</small>
                 </div>
-                <input type="number" name="cleaning_charge" value="0" step="0.01" class="charge-input" style="max-width: 150px;">
+                <input type="number" name="cleaning_charge" value="0" step="0.01" class="charge-input" style="max-width: 150px; background: var(--black-3); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); padding: 8px 12px;">
             </div>
             
             <div class="charge-row">
                 <div>
                     <label>Other Charges</label>
-                    <input type="text" name="other_charges_notes" placeholder="Description..." style="margin-top: 4px;">
+                    <input type="text" name="other_charges_notes" placeholder="Description..." style="margin-top: 4px; background: var(--black-3); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); padding: 8px 12px; width: 100%;">
                 </div>
-                <input type="number" name="other_charges" value="0" step="0.01" class="charge-input" style="max-width: 150px;">
+                <input type="number" name="other_charges" value="0" step="0.01" class="charge-input" style="max-width: 150px; background: var(--black-3); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); padding: 8px 12px;">
             </div>
         </div>
 
@@ -256,7 +287,7 @@
         <div class="form-section">
             <h3><i class="bi bi-journal-text"></i> Inspection Notes</h3>
             <div class="form-group">
-                <textarea name="notes" rows="4" placeholder="Any additional observations about the vehicle condition..."></textarea>
+                <textarea name="notes" rows="4" placeholder="Any additional observations about the vehicle condition..." class="form-control"></textarea>
             </div>
         </div>
 
