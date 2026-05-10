@@ -3,7 +3,7 @@
 @section('title', 'My Profile')
 
 @section('content')
-<div class="max-w-2xl">
+<div class="max-w-2xl mx-auto">
 
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-cream mb-1">My Profile</h1>
