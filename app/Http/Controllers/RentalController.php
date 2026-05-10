@@ -652,4 +652,22 @@ class RentalController extends Controller
 
         return Storage::disk('private')->download($rental->id_file_path, "ID_{$rental->rental_id_display}.jpg");
     }
+
+    public function destroy(Rental $rental)
+    {
+        $rentalId = $rental->rental_id_display;
+
+        // Delete associated files
+        if ($rental->contract_file_path) {
+            Storage::disk('private')->delete($rental->contract_file_path);
+        }
+        if ($rental->id_file_path) {
+            Storage::disk('private')->delete($rental->id_file_path);
+        }
+
+        $rental->delete();
+
+        return redirect()->route('rentals.index')
+                         ->with('success', "Rental {$rentalId} has been deleted.");
+    }
 }
