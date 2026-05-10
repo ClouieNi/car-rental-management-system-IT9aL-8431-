@@ -115,6 +115,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/messages',         [CustomerController::class, 'messages'])->name('messages');
         Route::post('/messages',        [CustomerController::class, 'sendMessage'])->name('send-message');
+
+        Route::get('/profile',          [CustomerController::class, 'profileEdit'])->name('profile');
+        Route::put('/profile',          [CustomerController::class, 'profileUpdate'])->name('profile.update');
     });
 });
 

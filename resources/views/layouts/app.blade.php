@@ -141,10 +141,17 @@
         <!-- User Card -->
         <div class="p-5 border-t border-white/5">
             <div class="flex items-center justify-between p-2.5 bg-dark-200 rounded-md border border-white/5">
-                <div class="min-w-0">
-                    <div class="text-[13px] font-semibold text-cream truncate">{{ auth()->user()->name }}</div>
-                    <div class="text-[10px] text-gold uppercase tracking-wider">{{ auth()->user()->role }}</div>
-                </div>
+                @if(auth()->user()->role === 'customer')
+                    <a href="{{ route('customer.profile') }}" class="min-w-0 group flex-1 hover:opacity-80 transition-opacity">
+                        <div class="text-[13px] font-semibold text-cream truncate group-hover:text-gold transition-colors">{{ auth()->user()->name }}</div>
+                        <div class="text-[10px] text-gold uppercase tracking-wider">{{ auth()->user()->role }}</div>
+                    </a>
+                @else
+                    <div class="min-w-0">
+                        <div class="text-[13px] font-semibold text-cream truncate">{{ auth()->user()->name }}</div>
+                        <div class="text-[10px] text-gold uppercase tracking-wider">{{ auth()->user()->role }}</div>
+                    </div>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors p-1" title="Logout">

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\{Car, CustomerMessage, Driver, Quote, Rental};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 use Carbon\Carbon;
 
 class CustomerController extends Controller
@@ -230,6 +232,41 @@ class CustomerController extends Controller
         
         $rental->load('car');
         return view('customer.documents', compact('rental'));
+    }
+
+    public function profileEdit()
+    {
+        return view('customer.profile', ['user' => auth()->user()]);
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $user = auth()->user();
+
+        $data = $request->validate([
+            'name'                  => 'required|string|max:255',
+            'email'                 => 'required|email|max:255|unique:users,email,' . $user->id,
+            'current_password'      => 'nullable|string',
+            'password'              => ['nullable', 'confirmed', Password::min(8)],
+        ]);
+
+        // If user wants to change password, verify current password
+        if (!empty($data['current_password'])) {
+            if (!Hash::check($data['current_password'], $user->password)) {
+                return back()->withErrors(['current_password' => 'Current password is incorrect.'])->withInput();
+            }
+        }
+
+        $user->name  = $data['name'];
+        $user->email = $data['email'];
+
+        if (!empty($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Profile updated successfully.');
     }
 
     public function uploadDocuments(Request $request, Rental $rental)
