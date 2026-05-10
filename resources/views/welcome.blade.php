@@ -549,9 +549,6 @@
             Self-drive &amp; chauffeured vehicles for every journey.<br>
             <strong>Affordable rates</strong>, well-maintained fleet, hassle-free booking — all under one roof.
         </p>
-        <div class="signin-hint">
-            <i class="bi bi-arrow-right"></i> Get your instant quote on the right →
-        </div>
     </div>
 
     <!-- Right: Quick Quote Form -->
