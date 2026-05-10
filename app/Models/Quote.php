@@ -16,7 +16,7 @@ class Quote extends Model
         'rental_type', 'destination', 'distance_km',
         'base_cost', 'distance_surcharge', 'total_estimate',
         'status', 'guest_notes', 'admin_remarks',
-        'rental_id', 'expires_at',
+        'license_file_path', 'rental_id', 'expires_at',
     ];
 
     protected $casts = [

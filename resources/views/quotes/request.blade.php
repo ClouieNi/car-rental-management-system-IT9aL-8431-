@@ -380,7 +380,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('quotes.request.store') }}" id="quote-form">
+        <form method="POST" action="{{ route('quotes.request.store') }}" id="quote-form" enctype="multipart/form-data">
             @csrf
 
             <!-- Contact Info -->
@@ -492,6 +492,20 @@
                         <input type="number" id="distance_km" name="distance_km"
                                value="{{ old('distance_km', request('distance_km', 0)) }}" min="0"
                                placeholder="0" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <!-- License ID -->
+            <div class="form-section">
+                <h3><i class="bi bi-card-image"></i> DRIVER'S LICENSE</h3>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="license_file">Upload Driver's License / Valid ID<span class="req">*</span></label>
+                        <input type="file" id="license_file" name="license_file"
+                               accept="image/jpeg,image/png,application/pdf" required
+                               style="padding: 10px 14px; cursor: pointer;">
+                        <span style="font-size:11px; color:#A1A09A; margin-top:6px;"><i class="bi bi-info-circle"></i> Accepted: JPG, PNG, PDF — Max 5MB</span>
                     </div>
                 </div>
             </div>

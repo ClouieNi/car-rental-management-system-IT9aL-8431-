@@ -97,16 +97,17 @@ class QuoteController extends Controller
     public function requestStore(Request $request)
     {
         $data = $request->validate([
-            'guest_name'   => 'required|string|max:100',
-            'guest_email'  => 'required|email|max:150',
-            'guest_phone'  => 'required|string|max:20',
-            'car_id'       => 'required|exists:cars,id',
-            'rental_type'  => 'required|in:with_driver,self_drive',
-            'start_date'   => 'required|date|after_or_equal:today',
-            'end_date'     => 'required|date|after:start_date',
-            'destination'  => 'nullable|string|max:255',
-            'distance_km'  => 'nullable|integer|min:0',
-            'guest_notes'  => 'nullable|string|max:1000',
+            'guest_name'    => 'required|string|max:100',
+            'guest_email'   => 'required|email|max:150',
+            'guest_phone'   => 'required|string|max:20',
+            'car_id'        => 'required|exists:cars,id',
+            'rental_type'   => 'required|in:with_driver,self_drive',
+            'start_date'    => 'required|date|after_or_equal:today',
+            'end_date'      => 'required|date|after:start_date',
+            'destination'   => 'nullable|string|max:255',
+            'distance_km'   => 'nullable|integer|min:0',
+            'guest_notes'   => 'nullable|string|max:1000',
+            'license_file'  => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         $car       = Car::findOrFail($data['car_id']);
@@ -115,6 +116,8 @@ class QuoteController extends Controller
         $surcharge = \App\Models\Rental::calculateDistanceSurcharge($distKm);
         $baseCost  = $car->daily_rate * $days;
         $total     = $baseCost + $surcharge;
+
+        $licensePath = $request->file('license_file')->store('quotes/licenses', 'private');
 
         $quote = Quote::create([
             'guest_name'         => $data['guest_name'],
@@ -131,6 +134,7 @@ class QuoteController extends Controller
             'base_cost'          => $baseCost,
             'total_estimate'     => $total,
             'guest_notes'        => $data['guest_notes'] ?? null,
+            'license_file_path'  => $licensePath,
             'status'             => 'pending',
         ]);
 
