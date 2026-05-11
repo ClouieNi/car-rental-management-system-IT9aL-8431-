@@ -131,7 +131,7 @@
                                 @endif
                             </small>
                         </div>
-                        @if(in_array($rental->status, ['approved', 'documents_pending']))
+                        @if(in_array($rental->status, ['reserved', 'approved', 'documents_pending']))
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <input type="file" name="contract_file" id="contract_file" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="this.form.submit()">
                                 <label for="contract_file" class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0;">
@@ -159,7 +159,7 @@
                                 @endif
                             </small>
                         </div>
-                        @if(in_array($rental->status, ['approved', 'documents_pending']))
+                        @if(in_array($rental->status, ['reserved', 'approved', 'documents_pending']))
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <input type="file" name="id_file" id="id_file" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="this.form.submit()">
                                 <label for="id_file" class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0;">

@@ -75,7 +75,7 @@
             @if($recentQuotes->count() > 0)
                 <div class="space-y-3">
                     @foreach($recentQuotes as $quote)
-                        <div class="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg border border-white/5">
+                        <div class="flex items-center justify-between p-3 bg-dark-200/30 rounded-lg">
                             <div>
                                 <div class="font-medium text-cream">{{ $quote->car->brand }} {{ $quote->car->model }}</div>
                                 <div class="text-sm text-gray-500">{{ $quote->created_at->format('M d, Y') }}</div>
@@ -120,7 +120,7 @@
             @if($recentRentals->count() > 0)
                 <div class="space-y-3">
                     @foreach($recentRentals as $rental)
-                        <div class="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg border border-white/5">
+                        <div class="flex items-center justify-between p-3 bg-dark-200/30 rounded-lg">
                             <div>
                                 <div class="font-medium text-cream">{{ $rental->car->brand }} {{ $rental->car->model }}</div>
                                 <div class="text-sm text-gray-500">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d') }}</div>

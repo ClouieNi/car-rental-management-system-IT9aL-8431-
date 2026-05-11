@@ -37,7 +37,7 @@
     <!-- Transactions List -->
     <div class="space-y-4">
         @forelse($rentals as $rental)
-            <div class="bg-dark-100 border border-white/10 rounded-xl p-5 hover:border-gold/30 transition-all">
+            <div class="bg-dark-100 rounded-xl p-5 hover:bg-dark-100/80 transition-all">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <!-- Car Info -->
                     <div class="flex items-center gap-4">
