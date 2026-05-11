@@ -317,6 +317,44 @@ class CustomerController extends Controller
         }
 
         $uploadedText = implode(' and ', $uploaded);
-        return back()->with('success', "{$uploadedText} uploaded successfully. Awaiting staff verification.");
+        return redirect()->route('customer.rental-show', $rental)
+            ->with('doc_success', "{$uploadedText} uploaded successfully. Awaiting staff verification.");
+    }
+
+    public function recordPayment(Request $request, Rental $rental)
+    {
+        abort_if($rental->customer_user_id !== auth()->id(), 403);
+        
+        // Only allow payment for reserved status with unpaid or partial payment
+        if ($rental->status !== 'reserved' || $rental->payment_status === 'paid') {
+            return back()->withErrors(['error' => 'Payment is not available for this rental.']);
+        }
+
+        $validated = $request->validate([
+            'amount' => 'required|numeric|min:0.01|max:' . ($rental->total_cost - $rental->amount_paid),
+            'payment_method' => 'required|in:gcash,maya,bank_transfer,cash',
+            'reference_number' => 'required|string|max:100',
+        ]);
+
+        $newAmountPaid = $rental->amount_paid + $validated['amount'];
+        
+        // Determine new payment status
+        $paymentStatus = 'partial';
+        if ($newAmountPaid >= $rental->total_cost) {
+            $paymentStatus = 'paid';
+        }
+
+        // Append payment info to admin notes
+        $paymentNote = "[Payment] ₱{$validated['amount']} via " . str_replace('_', ' ', $validated['payment_method']) . 
+                      " (Ref: {$validated['reference_number']}) - " . now()->format('M d, Y H:i') . "\n";
+
+        $rental->update([
+            'amount_paid' => $newAmountPaid,
+            'payment_status' => $paymentStatus,
+            'admin_notes' => $rental->admin_notes . "\n" . $paymentNote,
+        ]);
+
+        return redirect()->route('customer.rental-show', $rental)
+            ->with('payment_success', "Payment of ₱{$validated['amount']} recorded successfully. Awaiting verification.");
     }
 }

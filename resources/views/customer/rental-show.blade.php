@@ -52,13 +52,9 @@
                     <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">
                         Plate: {{ $rental->car->plate_number }}
                     </div>
-                    @if($rental->car->supplier)
+                    @if($rental->car->supplier && $rental->car->supplier->isCompanyOwned())
                         <div style="font-size: 12px;">
-                            @if($rental->car->supplier->isCompanyOwned())
-                                <span style="color: #4ADE80;"><i class="bi bi-building"></i> Company Vehicle</span>
-                            @else
-                                <span style="color: #38BDF8;"><i class="bi bi-handshake"></i> Partner: {{ $rental->car->supplier->name }}</span>
-                            @endif
+                            <span style="color: #4ADE80;"><i class="bi bi-building"></i> Company Vehicle</span>
                         </div>
                     @endif
                 </div>
@@ -105,56 +101,74 @@
                 Documents
             </h3>
             
+            @if(session('doc_success'))
+                <div class="alert alert-success" style="margin-bottom: 16px; padding: 12px 16px; background: #10B98120; border: 1px solid #10B981; border-radius: 8px; color: #10B981;">
+                    <i class="bi bi-check-circle"></i> {{ session('doc_success') }}
+                </div>
+            @endif
+            
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 <!-- Contract -->
-                <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--black-1); border-radius: 8px;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{ $rental->contract_file_path ? ($rental->contract_status === 'verified' ? '#10B981' : '#F59E0B') : '#374151' }};">
-                        <i class="bi bi-file-text" style="color: white;"></i>
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 500;">Rental Contract</div>
-                        <small style="color: {{ $rental->contract_file_path ? ($rental->contract_status === 'verified' ? '#10B981' : '#F59E0B') : '#9CA3AF' }};">
-                            @if($rental->contract_file_path)
-                                @if($rental->contract_status === 'verified')
-                                    Verified ✓
-                                @elseif($rental->contract_status === 'rejected')
-                                    Rejected - Please reupload
+                <form method="POST" action="{{ route('customer.rental.upload-documents', $rental) }}" enctype="multipart/form-data" style="margin: 0;">
+                    @csrf
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--black-1); border-radius: 8px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{ $rental->contract_file_path ? ($rental->contract_status === 'verified' ? '#10B981' : '#F59E0B') : '#374151' }};">
+                            <i class="bi bi-file-text" style="color: white;"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500;">Rental Contract</div>
+                            <small style="color: {{ $rental->contract_file_path ? ($rental->contract_status === 'verified' ? '#10B981' : '#F59E0B') : '#9CA3AF' }};">
+                                @if($rental->contract_file_path)
+                                    @if($rental->contract_status === 'verified')
+                                        Verified ✓
+                                    @elseif($rental->contract_status === 'rejected')
+                                        Rejected - Please reupload
+                                    @else
+                                        Uploaded - Awaiting verification
+                                    @endif
                                 @else
-                                    Uploaded - Awaiting verification
+                                    Not uploaded yet
                                 @endif
-                            @else
-                                Not uploaded yet
-                            @endif
-                        </small>
+                            </small>
+                        </div>
+                        @if(in_array($rental->status, ['approved', 'documents_pending']))
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="file" name="contract_file" id="contract_file" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="this.form.submit()">
+                                <label for="contract_file" class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0;">
+                                    <i class="bi bi-upload"></i> {{ $rental->contract_file_path ? 'Replace' : 'Upload' }}
+                                </label>
+                            </div>
+                        @endif
                     </div>
-                    @if(in_array($rental->status, ['approved', 'documents_pending']))
-                        <a href="{{ route('customer.rental.documents', $rental) }}" class="btn btn-secondary btn-sm">
-                            {{ $rental->contract_file_path ? 'Replace' : 'Upload' }}
-                        </a>
-                    @endif
-                </div>
+                </form>
                 
                 <!-- ID -->
-                <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--black-1); border-radius: 8px;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{ $rental->id_file_path ? '#10B981' : '#374151' }};">
-                        <i class="bi bi-person-badge" style="color: white;"></i>
+                <form method="POST" action="{{ route('customer.rental.upload-documents', $rental) }}" enctype="multipart/form-data" style="margin: 0;">
+                    @csrf
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--black-1); border-radius: 8px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{ $rental->id_file_path ? '#10B981' : '#374151' }};">
+                            <i class="bi bi-person-badge" style="color: white;"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500;">Valid ID</div>
+                            <small style="color: {{ $rental->id_file_path ? '#10B981' : '#9CA3AF' }};">
+                                @if($rental->id_file_path)
+                                    Uploaded ✓
+                                @else
+                                    Not uploaded yet
+                                @endif
+                            </small>
+                        </div>
+                        @if(in_array($rental->status, ['approved', 'documents_pending']))
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="file" name="id_file" id="id_file" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" onchange="this.form.submit()">
+                                <label for="id_file" class="btn btn-secondary btn-sm" style="cursor: pointer; margin: 0;">
+                                    <i class="bi bi-upload"></i> {{ $rental->id_file_path ? 'Replace' : 'Upload' }}
+                                </label>
+                            </div>
+                        @endif
                     </div>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 500;">Valid ID</div>
-                        <small style="color: {{ $rental->id_file_path ? '#10B981' : '#9CA3AF' }};">
-                            @if($rental->id_file_path)
-                                Uploaded ✓
-                            @else
-                                Not uploaded yet
-                            @endif
-                        </small>
-                    </div>
-                    @if(in_array($rental->status, ['approved', 'documents_pending']))
-                        <a href="{{ route('customer.rental.documents', $rental) }}" class="btn btn-secondary btn-sm">
-                            {{ $rental->id_file_path ? 'Replace' : 'Upload' }}
-                        </a>
-                    @endif
-                </div>
+                </form>
             </div>
         </div>
         
@@ -203,6 +217,72 @@
             </div>
         @endif
         
+        <!-- Payment Section (for reserved rentals not fully paid) -->
+        @if($rental->status === 'reserved' && $rental->payment_status !== 'paid')
+            <div class="card" style="margin-bottom: 24px; border-color: var(--gold);">
+                <h3 style="font-size: 14px; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">
+                    <i class="bi bi-credit-card"></i> Payment Required
+                </h3>
+                
+                <div style="margin-bottom: 16px; padding: 12px; background: var(--black-1); border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: var(--text-muted); font-size: 13px;">Total Cost</span>
+                        <span style="font-weight: 500;">₱{{ number_format($rental->total_cost, 2) }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: var(--text-muted); font-size: 13px;">Amount Paid</span>
+                        <span style="font-weight: 500; color: #10B981;">₱{{ number_format($rental->amount_paid, 2) }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-subtle);">
+                        <span style="color: var(--text-muted); font-size: 13px;">Balance Due</span>
+                        <span style="font-weight: 600; color: var(--gold);">₱{{ number_format($rental->total_cost - $rental->amount_paid, 2) }}</span>
+                    </div>
+                </div>
+                
+                @if(session('payment_success'))
+                    <div style="margin-bottom: 16px; padding: 12px; background: #10B98120; border-radius: 8px; color: #10B981; font-size: 13px;">
+                        <i class="bi bi-check-circle"></i> {{ session('payment_success') }}
+                    </div>
+                @endif
+                
+                <form method="POST" action="{{ route('customer.rental.payment', $rental) }}">
+                    @csrf
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Payment Amount (₱)</label>
+                        <input type="number" name="amount" step="0.01" min="0.01" max="{{ $rental->total_cost - $rental->amount_paid }}" 
+                               value="{{ $rental->total_cost - $rental->amount_paid }}" required
+                               style="width: 100%; padding: 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px;">
+                    </div>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Payment Method</label>
+                        <select name="payment_method" required
+                                style="width: 100%; padding: 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px;">
+                            <option value="">Select method...</option>
+                            <option value="gcash">GCash</option>
+                            <option value="maya">Maya</option>
+                            <option value="bank_transfer">Bank Transfer</option>
+                            <option value="cash">Cash</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Reference Number</label>
+                        <input type="text" name="reference_number" placeholder="e.g., GCash ref # or Bank TXN ID" required
+                               style="width: 100%; padding: 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px;">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">
+                        <i class="bi bi-credit-card"></i> Record Payment
+                    </button>
+                </form>
+                
+                <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted); text-align: center;">
+                    <i class="bi bi-info-circle"></i> Payment will be verified by staff before pickup
+                </p>
+            </div>
+        @endif
+
         <!-- Status Info -->
         <div class="card" style="margin-bottom: 24px;">
             <h3 style="font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">

@@ -75,7 +75,7 @@
 
                     <!-- Cost -->
                     <div class="text-right">
-                        <div class="text-2xl font-bold text-cream">${{ number_format($rental->total_cost, 2) }}</div>
+                        <div class="text-2xl font-bold text-cream">₱{{ number_format($rental->total_cost, 2) }}</div>
                         @php
                             $paymentColors = [
                                 'paid' => 'text-green-500',
@@ -88,7 +88,7 @@
                             {{ ucfirst($rental->payment_status) }}
                             @if($rental->payment_status !== 'paid')
                                 @if($rental->amount_paid > 0)
-                                    (Paid: ${{ number_format($rental->amount_paid, 2) }})
+                                    (Paid: ₱{{ number_format($rental->amount_paid, 2) }})
                                 @endif
                             @endif
                         </div>

@@ -87,7 +87,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="font-semibold text-cream">${{ number_format($quote->total_estimate, 0) }}</div>
+                                <div class="font-semibold text-cream">₱{{ number_format($quote->total_estimate, 0) }}</div>
                                 @php
                                     $statusColors = [
                                         'pending' => 'bg-yellow-500/20 text-yellow-500',
@@ -137,7 +137,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="font-semibold text-cream">${{ number_format($rental->total_cost, 0) }}</div>
+                                <div class="font-semibold text-cream">₱{{ number_format($rental->total_cost, 0) }}</div>
                                 @php
                                     $rentalStatusColors = [
                                         'reserved' => 'bg-blue-500/20 text-blue-500',
