@@ -70,21 +70,15 @@
         <div class="bg-dark-100 border border-white/10 rounded-xl p-6">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-cream">Recent Quotes</h2>
-                <a href="/quote" class="text-sm text-gold hover:text-gold-light">Get New Quote</a>
             </div>
 
             @if($recentQuotes->count() > 0)
                 <div class="space-y-3">
                     @foreach($recentQuotes as $quote)
                         <div class="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg border border-white/5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-dark-200 rounded-lg flex items-center justify-center">
-                                    <i class="bi bi-car-front text-gray-400"></i>
-                                </div>
-                                <div>
-                                    <div class="font-medium text-cream">{{ $quote->car->brand }} {{ $quote->car->model }}</div>
-                                    <div class="text-sm text-gray-500">{{ $quote->created_at->format('M d, Y') }}</div>
-                                </div>
+                            <div>
+                                <div class="font-medium text-cream">{{ $quote->car->brand }} {{ $quote->car->model }}</div>
+                                <div class="text-sm text-gray-500">{{ $quote->created_at->format('M d, Y') }}</div>
                             </div>
                             <div class="text-right">
                                 <div class="font-semibold text-cream">₱{{ number_format($quote->total_estimate, 0) }}</div>
@@ -127,14 +121,9 @@
                 <div class="space-y-3">
                     @foreach($recentRentals as $rental)
                         <div class="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg border border-white/5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-dark-200 rounded-lg flex items-center justify-center">
-                                    <i class="bi bi-car-front text-gray-400"></i>
-                                </div>
-                                <div>
-                                    <div class="font-medium text-cream">{{ $rental->car->brand }} {{ $rental->car->model }}</div>
-                                    <div class="text-sm text-gray-500">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d') }}</div>
-                                </div>
+                            <div>
+                                <div class="font-medium text-cream">{{ $rental->car->brand }} {{ $rental->car->model }}</div>
+                                <div class="text-sm text-gray-500">{{ $rental->start_date->format('M d') }} - {{ $rental->end_date->format('M d') }}</div>
                             </div>
                             <div class="text-right">
                                 <div class="font-semibold text-cream">₱{{ number_format($rental->total_cost, 0) }}</div>
