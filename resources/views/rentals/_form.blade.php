@@ -37,6 +37,17 @@
         @error('payment_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 </div>
+@isset($rental->id)
+<div class="form-group">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}">
+        @foreach(['reserved','ongoing','completed','cancelled'] as $s)
+            <option value="{{ $s }}" {{ old('status', $rental->status ?? '') == $s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
+        @endforeach
+    </select>
+    @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+</div>
+@endisset
 <div class="form-row">
     <div class="form-group">
         <label class="form-label">Start Date</label>
