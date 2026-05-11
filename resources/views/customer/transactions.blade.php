@@ -62,14 +62,14 @@
                     <!-- Status -->
                     @php
                         $statusColors = [
-                            'reserved' => 'bg-blue-500/20 text-blue-500 border-blue-500/30',
-                            'ongoing' => 'bg-gold/20 text-gold border-gold/30',
-                            'completed' => 'bg-green-500/20 text-green-500 border-green-500/30',
-                            'cancelled' => 'bg-red-500/20 text-red-500 border-red-500/30',
+                            'reserved' => 'text-blue-500',
+                            'ongoing' => 'text-gold',
+                            'completed' => 'text-green-500',
+                            'cancelled' => 'text-red-500',
                         ];
-                        $statusClass = $statusColors[$rental->status] ?? 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+                        $statusClass = $statusColors[$rental->status] ?? 'text-gray-400';
                     @endphp
-                    <div class="px-3 py-1.5 rounded-full border text-sm font-medium {{ $statusClass }}">
+                    <div class="px-3 py-1.5 rounded-full text-sm font-medium {{ $statusClass }}">
                         {{ ucfirst($rental->status) }}
                     </div>
 
@@ -96,9 +96,9 @@
 
                     <!-- Action -->
                     <a href="{{ route('customer.rental-show', $rental) }}" 
-                       class="inline-flex items-center gap-2 bg-dark-200 hover:bg-gold/20 border border-white/10 hover:border-gold/30 text-cream px-4 py-2 rounded-lg transition text-sm">
+                       class="inline-flex items-center gap-2 bg-dark-200 hover:bg-gold/20 border border-white/10 hover:border-gold/30 text-cream px-3 py-1.5 rounded-lg transition text-xs w-fit">
                         <span>View Details</span>
-                        <i class="bi bi-arrow-right text-gold"></i>
+                        <i class="bi bi-arrow-right text-gold text-xs"></i>
                     </a>
                 </div>
             </div>
