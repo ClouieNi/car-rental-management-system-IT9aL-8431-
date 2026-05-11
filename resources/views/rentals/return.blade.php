@@ -8,6 +8,38 @@
 <style>
 .return-form {
     max-width: 800px;
+    margin: 0 auto;
+}
+/* Custom file input */
+.file-upload-wrapper { position: relative; }
+.file-upload-wrapper input[type="file"] {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer; z-index: 2;
+}
+.file-upload-label {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    background: var(--black-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+.file-upload-label:hover,
+.file-upload-wrapper:focus-within .file-upload-label {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(255,184,0,0.1);
+}
+.file-upload-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px;
+    background: var(--gold); color: #0A0A0A;
+    border-radius: var(--radius-sm); font-size: 12px; font-weight: 700;
+    white-space: nowrap; flex-shrink: 0;
+}
+.file-upload-name {
+    font-size: 13px; color: var(--text-muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .form-section {
     background: var(--black-2);
@@ -192,7 +224,13 @@
             
             <div class="form-group">
                 <label>Damage Photos</label>
-                <input type="file" name="damage_photos[]" multiple accept="image/*" class="file-input">
+                <div class="file-upload-wrapper">
+                    <input type="file" name="damage_photos[]" id="damage-photos" multiple accept="image/*">
+                    <div class="file-upload-label">
+                        <span class="file-upload-btn"><i class="bi bi-upload"></i> Choose Files</span>
+                        <span class="file-upload-name" id="damage-photos-name">No files chosen</span>
+                    </div>
+                </div>
                 <small style="color: var(--text-muted);">Upload multiple photos of the damage</small>
             </div>
             
@@ -321,6 +359,21 @@ function calculateDamage() {
 
 // Initial calculation
 calculateDamage();
+
+// File input — show selected filenames
+document.getElementById('damage-photos').addEventListener('change', function() {
+    const nameEl = document.getElementById('damage-photos-name');
+    if (this.files.length === 0) {
+        nameEl.textContent = 'No files chosen';
+        nameEl.style.color = '';
+    } else if (this.files.length === 1) {
+        nameEl.textContent = this.files[0].name;
+        nameEl.style.color = 'var(--text-primary)';
+    } else {
+        nameEl.textContent = this.files.length + ' files selected';
+        nameEl.style.color = 'var(--text-primary)';
+    }
+});
 </script>
 @endpush
 
