@@ -77,11 +77,6 @@
                     @endif
                 </a>
 
-                <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Settings</div>
-                <a href="{{ route('customer.profile') }}"
-                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('customer.profile') ? 'text-gold bg-gold/10 border-gold' : '' }}">
-                    <i class="bi bi-person text-base w-5"></i> Profile
-                </a>
             @else
                 {{-- ADMIN NAVIGATION --}}
                 <div class="px-5 py-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Overview</div>
@@ -142,6 +137,13 @@
                     @endif
                 </a>
             @endif
+
+            <div class="mt-4">
+                <a href="{{ route('customer.profile') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('customer.profile') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-person text-base w-5"></i> Profile
+                </a>
+            </div>
         </nav>
 
         <!-- User Card -->
