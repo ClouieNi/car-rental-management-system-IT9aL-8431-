@@ -256,14 +256,17 @@
                     
                     <div style="margin-bottom: 12px;">
                         <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Payment Method</label>
-                        <select name="payment_method" required
-                                style="width: 100%; padding: 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px; appearance: none; -webkit-appearance: none; cursor: pointer;">
-                            <option value="" style="background: var(--black-1); color: var(--text-muted);">Select method...</option>
-                            <option value="gcash" style="background: var(--black-1); color: var(--text-primary);">GCash</option>
-                            <option value="maya" style="background: var(--black-1); color: var(--text-primary);">Maya</option>
-                            <option value="bank_transfer" style="background: var(--black-1); color: var(--text-primary);">Bank Transfer</option>
-                            <option value="cash" style="background: var(--black-1); color: var(--text-primary);">Cash</option>
-                        </select>
+                        <div style="position: relative;">
+                            <select name="payment_method" required
+                                    style="width: 100%; padding: 10px 32px 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px; appearance: none; -webkit-appearance: none; cursor: pointer;">
+                                <option value="" style="background: #1a1a1a; color: #9ca3af;">Select method...</option>
+                                <option value="gcash" style="background: #1a1a1a; color: #ededec;">GCash</option>
+                                <option value="maya" style="background: #1a1a1a; color: #ededec;">Maya</option>
+                                <option value="bank_transfer" style="background: #1a1a1a; color: #ededec;">Bank Transfer</option>
+                                <option value="cash" style="background: #1a1a1a; color: #ededec;">Cash</option>
+                            </select>
+                            <i class="bi bi-chevron-down" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; font-size: 12px;"></i>
+                        </div>
                     </div>
                     
                     <div style="margin-bottom: 16px;">
