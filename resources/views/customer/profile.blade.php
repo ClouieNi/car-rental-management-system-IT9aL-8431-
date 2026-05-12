@@ -81,11 +81,16 @@
                 </h3>
 
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Your Question</label>
-                    <input type="text" name="security_question"
-                           class="w-full bg-dark-200 border border-white/10 rounded-lg px-4 py-2.5 text-cream text-sm focus:outline-none focus:border-gold/50 transition-colors @error('security_question') border-red-500/50 @enderror"
-                           placeholder="e.g., What was my first car?"
-                           value="{{ old('security_question', $user->security_question) }}">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Choose Question</label>
+                    <select name="security_question"
+                            class="w-full bg-dark-200 border border-white/10 rounded-lg px-4 py-2.5 text-cream text-sm focus:outline-none focus:border-gold/50 transition-colors @error('security_question') border-red-500/50 @enderror">
+                        <option value="">Select a security question...</option>
+                        @foreach(["mother_maiden" => "What is your mother's maiden name?", "first_pet" => "What was the name of your first pet?", "birth_city" => "What city were you born in?", "favorite_food" => "What is your favorite food?", "elementary_school" => "What was the name of your elementary school?"] as $key => $question)
+                            <option value="{{ $question }}" {{ old('security_question', $user->security_question) == $question ? 'selected' : '' }}>
+                                {{ $question }}
+                            </option>
+                        @endforeach
+                    </select>
                     @error('security_question')
                         <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                     @enderror

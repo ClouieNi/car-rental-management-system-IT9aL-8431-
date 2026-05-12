@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="mb-4 text-sm text-gray-400">
-        {{ __('Create your account to start renting cars. You will also need to set up a security question for password recovery.') }}
+        {{ __('Create your account to start renting cars. Your password will be set to "password" by default. You can change it later in your profile.') }}
     </div>
 
     <form method="POST" action="{{ route('register') }}">
@@ -26,25 +26,9 @@
             @endif
         </div>
 
-        <!-- Password -->
-        <div class="mb-3">
-            <label for="password" class="block text-sm font-medium text-cream mb-1">{{ __('Password') }}</label>
-            <input id="password" type="password" name="password" required autocomplete="new-password"
-                   class="block w-full px-3 py-2 bg-dark border border-white/10 rounded text-cream text-sm placeholder-gray-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/50 transition" />
-            @if ($errors->get('password'))
-                <div class="mt-1 text-sm text-red-400">{{ $errors->first('password') }}</div>
-            @endif
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mb-4">
-            <label for="password_confirmation" class="block text-sm font-medium text-cream mb-1">{{ __('Confirm Password') }}</label>
-            <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
-                   class="block w-full px-3 py-2 bg-dark border border-white/10 rounded text-cream text-sm placeholder-gray-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/50 transition" />
-            @if ($errors->get('password_confirmation'))
-                <div class="mt-1 text-sm text-red-400">{{ $errors->first('password_confirmation') }}</div>
-            @endif
-        </div>
+        <!-- Hidden password fields with default value -->
+        <input type="hidden" name="password" value="password">
+        <input type="hidden" name="password_confirmation" value="password">
 
         <!-- Security Question -->
         <div class="border-t border-white/10 pt-4 mb-3">
@@ -54,10 +38,16 @@
             </h3>
 
             <div class="mb-3">
-                <label for="security_question" class="block text-sm font-medium text-cream mb-1">{{ __('Your Question') }}</label>
-                <input id="security_question" type="text" name="security_question" value="{{ old('security_question') }}" required
-                       placeholder="e.g., What was my first car?"
-                       class="block w-full px-3 py-2 bg-dark border border-white/10 rounded text-cream text-sm placeholder-gray-500 focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/50 transition" />
+                <label for="security_question" class="block text-sm font-medium text-cream mb-1">{{ __('Choose Question') }}</label>
+                <select id="security_question" name="security_question" required
+                        class="block w-full px-3 py-2 bg-dark border border-white/10 rounded text-cream text-sm focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/50 transition">
+                    <option value="">Select a question...</option>
+                    @foreach(["mother_maiden" => "What is your mother's maiden name?", "first_pet" => "What was the name of your first pet?", "birth_city" => "What city were you born in?", "favorite_food" => "What is your favorite food?", "elementary_school" => "What was the name of your elementary school?"] as $key => $question)
+                        <option value="{{ $question }}" {{ old('security_question') == $question ? 'selected' : '' }}>
+                            {{ $question }}
+                        </option>
+                    @endforeach
+                </select>
                 @if ($errors->get('security_question'))
                     <div class="mt-1 text-sm text-red-400">{{ $errors->first('security_question') }}</div>
                 @endif
