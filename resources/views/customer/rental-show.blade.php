@@ -257,12 +257,12 @@
                     <div style="margin-bottom: 12px;">
                         <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Payment Method</label>
                         <select name="payment_method" required
-                                style="width: 100%; padding: 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px;">
-                            <option value="">Select method...</option>
-                            <option value="gcash">GCash</option>
-                            <option value="maya">Maya</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                            <option value="cash">Cash</option>
+                                style="width: 100%; padding: 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px; appearance: none; -webkit-appearance: none; cursor: pointer;">
+                            <option value="" style="background: var(--black-1); color: var(--text-muted);">Select method...</option>
+                            <option value="gcash" style="background: var(--black-1); color: var(--text-primary);">GCash</option>
+                            <option value="maya" style="background: var(--black-1); color: var(--text-primary);">Maya</option>
+                            <option value="bank_transfer" style="background: var(--black-1); color: var(--text-primary);">Bank Transfer</option>
+                            <option value="cash" style="background: var(--black-1); color: var(--text-primary);">Cash</option>
                         </select>
                     </div>
                     
