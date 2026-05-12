@@ -266,6 +266,11 @@ class CustomerController extends Controller
 
         $user->save();
 
+        // Update customer_name on user's rentals to keep them in sync
+        Rental::forCustomer($user->id)
+            ->whereIn('status', ['pending', 'reserved', 'approved', 'ongoing'])
+            ->update(['customer_name' => $data['name']]);
+
         return back()->with('success', 'Profile updated successfully.');
     }
 
@@ -278,10 +283,25 @@ class CustomerController extends Controller
             return back()->withErrors(['error' => 'Document upload is not available for this rental status.']);
         }
 
-        $validated = $request->validate([
-            'contract_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
-            'id_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        ]);
+        // Require files if not already uploaded
+        $rules = [];
+        $messages = [];
+        
+        if (!$rental->contract_file_path) {
+            $rules['contract_file'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:10240';
+            $messages['contract_file.required'] = 'The rental contract is required. Please upload your signed contract.';
+        } else {
+            $rules['contract_file'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240';
+        }
+        
+        if (!$rental->id_file_path) {
+            $rules['id_file'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
+            $messages['id_file.required'] = 'A valid ID is required. Please upload your government-issued ID.';
+        } else {
+            $rules['id_file'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
+        }
+        
+        $validated = $request->validate($rules, $messages);
 
         $uploaded = [];
 

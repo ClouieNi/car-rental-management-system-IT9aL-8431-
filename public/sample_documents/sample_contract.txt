@@ -1,0 +1,74 @@
+================================================================================
+                    CARS NI BAI RENTAL AGREEMENT
+                         Sample Contract Template
+================================================================================
+
+INSTRUCTIONS: This is a sample rental contract. Please fill in all required 
+fields, sign, and upload as PDF or clear photo (JPG/PNG).
+
+--------------------------------------------------------------------------------
+1. RENTER INFORMATION
+--------------------------------------------------------------------------------
+
+Full Name:        ________________________________________________
+
+Address:          ________________________________________________
+
+Contact Number:   ________________________________________________
+
+Email:            ________________________________________________
+
+Driver's License: ________________________________________________
+
+
+--------------------------------------------------------------------------------
+2. VEHICLE INFORMATION
+--------------------------------------------------------------------------------
+
+Vehicle Model:    ________________________________________________
+
+Plate Number:     ________________________________________________
+
+Rental Start:     ________________________________________________
+
+Rental End:       ________________________________________________
+
+
+--------------------------------------------------------------------------------
+3. TERMS AND CONDITIONS
+--------------------------------------------------------------------------------
+
+By signing this agreement, the renter agrees to the following terms:
+
+[ ] Renter must return vehicle in the same condition as received
+[ ] Fuel tank must be returned at the same level  
+[ ] Any damage caused by negligence is renter's financial responsibility
+[ ] Late returns will incur additional daily charges
+[ ] Vehicle is for personal use only; subletting is prohibited
+[ ] Renter is responsible for all traffic violations during rental period
+
+
+--------------------------------------------------------------------------------
+4. SIGNATURES
+--------------------------------------------------------------------------------
+
+By signing below, both parties agree to the terms of this rental agreement.
+
+
+    _____________________________          _____________________________
+    Renter's Signature                   Authorized Representative
+
+
+    Date: _______________                  Date: _______________
+
+
+================================================================================
+                        UPLOAD REQUIREMENTS
+================================================================================
+
+- Save this document as PDF, or take a clear photo (JPG/PNG)
+- Ensure all fields are filled and signatures are visible
+- Maximum file size: 10MB
+- Both Contract AND Valid ID are required for rental processing
+
+================================================================================

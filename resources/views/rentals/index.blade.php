@@ -81,7 +81,7 @@
             <tr>
                 <td>{{ $loop->iteration + ($rentals->currentPage() - 1) * $rentals->perPage() }}</td>
                 <td>
-                    <strong>{{ $rental->customer_name }}</strong>
+                    <strong>{{ $rental->customer?->name ?? $rental->customer_name }}</strong>
                     @if($rental->destination)
                         <br><small style="color: var(--text-dim);"><i class="bi bi-geo-alt"></i> {{ $rental->destination }}</small>
                     @endif

@@ -6,6 +6,19 @@
 
 @section('content')
 
+<style>
+/* Hide number input spinners */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+</style>
+
 <div class="card" style="margin-bottom: 24px;">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
         <div>
@@ -240,8 +253,8 @@
                 </div>
                 
                 @if(session('payment_success'))
-                    <div style="margin-bottom: 16px; padding: 12px; background: #10B98120; border-radius: 8px; color: #10B981; font-size: 13px;">
-                        <i class="bi bi-check-circle"></i> {{ session('payment_success') }}
+                    <div style="margin-bottom: 16px; padding: 12px 16px; background: #10B98120; border: 1px solid #10B981; border-radius: 8px; color: #10B981; font-size: 13px;">
+                        <i class="bi bi-check-circle-fill"></i> {{ session('payment_success') }}
                     </div>
                 @endif
                 
@@ -283,6 +296,20 @@
                 <p style="margin-top: 12px; font-size: 11px; color: var(--text-muted); text-align: center;">
                     <i class="bi bi-info-circle"></i> Payment will be verified by staff before pickup
                 </p>
+            </div>
+        @endif
+
+        @if($rental->payment_status === 'paid')
+            <div class="card" style="margin-bottom: 24px; border-color: #10B981;">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: #10B98110; border-radius: 8px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #10B981;">
+                        <i class="bi bi-check-circle-fill" style="color: white; font-size: 20px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: #10B981; font-size: 16px;">Payment Complete!</div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Your rental has been fully paid. Ready for pickup!</div>
+                    </div>
+                </div>
             </div>
         @endif
 

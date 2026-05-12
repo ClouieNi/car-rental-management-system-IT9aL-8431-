@@ -9,22 +9,22 @@
     </div>
 
     <!-- Filters and Action -->
-    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex flex-wrap gap-2">
             <a href="{{ route('customer.transactions') }}"
-               class="px-4 py-2 rounded-lg text-sm font-medium transition {{ !request('status') ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
+               class="px-3 py-1.5 rounded-md text-xs font-medium transition {{ !request('status') ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
                 All
             </a>
             <a href="{{ route('customer.transactions', ['status' => 'ongoing']) }}"
-               class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'ongoing' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
+               class="px-3 py-1.5 rounded-md text-xs font-medium transition {{ request('status') === 'ongoing' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
                 Ongoing
             </a>
             <a href="{{ route('customer.transactions', ['status' => 'reserved']) }}"
-               class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'reserved' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
+               class="px-3 py-1.5 rounded-md text-xs font-medium transition {{ request('status') === 'reserved' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
                 Reserved
             </a>
             <a href="{{ route('customer.transactions', ['status' => 'completed']) }}"
-               class="px-4 py-2 rounded-lg text-sm font-medium transition {{ request('status') === 'completed' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
+               class="px-3 py-1.5 rounded-md text-xs font-medium transition {{ request('status') === 'completed' ? 'bg-gold text-dark' : 'bg-dark-100 text-gray-400 hover:text-cream border border-white/10' }}">
                 Completed
             </a>
         </div>
@@ -37,16 +37,16 @@
     <!-- Transactions List -->
     <div class="space-y-4">
         @forelse($rentals as $rental)
-            <div class="bg-dark-100 rounded-xl p-5 hover:bg-dark-100/80 transition-all">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="bg-dark-100 rounded-lg p-4 hover:bg-dark-100/80 transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <!-- Car Info -->
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 bg-dark-200 rounded-xl flex items-center justify-center">
-                            <i class="bi bi-car-front text-gold text-2xl"></i>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-dark-200 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-car-front text-gold text-lg"></i>
                         </div>
                         <div>
-                            <div class="font-semibold text-cream text-lg">{{ $rental->car->brand }} {{ $rental->car->model }}</div>
-                            <div class="text-sm text-gray-500">{{ $rental->car->plate_number }}</div>
+                            <div class="font-semibold text-cream text-base">{{ $rental->car->brand }} {{ $rental->car->model }}</div>
+                            <div class="text-xs text-gray-500">{{ $rental->car->plate_number }}</div>
                         </div>
                     </div>
 
@@ -75,7 +75,7 @@
 
                     <!-- Cost -->
                     <div class="text-right">
-                        <div class="text-2xl font-bold text-cream">₱{{ number_format($rental->total_cost, 2) }}</div>
+                        <div class="text-xl font-bold text-cream">₱{{ number_format($rental->total_cost, 2) }}</div>
                         @php
                             $paymentColors = [
                                 'paid' => 'text-green-500',
@@ -96,9 +96,9 @@
 
                     <!-- Action -->
                     <a href="{{ route('customer.rental-show', $rental) }}" 
-                       class="inline-flex items-center gap-2 bg-dark-200 hover:bg-gold/20 border border-white/10 hover:border-gold/30 text-cream px-3 py-1.5 rounded-lg transition text-xs w-fit">
-                        <span>View Details</span>
-                        <i class="bi bi-arrow-right text-gold text-xs"></i>
+                       class="self-start inline-flex items-center gap-2 bg-gold hover:bg-gold-dark text-dark font-bold py-2 px-4 rounded-lg transition text-sm">
+                        <i class="bi bi-arrow-right"></i>
+                        <span>View</span>
                     </a>
                 </div>
             </div>
