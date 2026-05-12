@@ -171,7 +171,18 @@
             </button>
             
             
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2.5 ml-auto">
+                @auth
+                    @if(auth()->user()->role === 'customer')
+                        <a href="{{ route('customer.profile') }}" class="flex items-center justify-center w-9 h-9 border border-white/10 rounded-md text-cream hover:bg-gold/10 hover:text-gold transition-colors" title="My Profile">
+                            <i class="bi bi-person-circle text-lg"></i>
+                        </a>
+                    @else
+                        <a href="{{ route('profile.edit') }}" class="flex items-center justify-center w-9 h-9 border border-white/10 rounded-md text-cream hover:bg-gold/10 hover:text-gold transition-colors" title="My Profile">
+                            <i class="bi bi-person-circle text-lg"></i>
+                        </a>
+                    @endif
+                @endauth
             </div>
         </header>
 
