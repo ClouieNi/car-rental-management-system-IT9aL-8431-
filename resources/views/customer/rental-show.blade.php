@@ -251,7 +251,7 @@
                         <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Payment Amount (₱)</label>
                         <input type="number" name="amount" step="0.01" min="0.01" max="{{ $rental->total_cost - $rental->amount_paid }}" 
                                value="{{ $rental->total_cost - $rental->amount_paid }}" required
-                               style="width: 100%; padding: 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px;">
+                               style="width: 100%; padding: 10px 12px; background: var(--black-1); border: 1px solid var(--border-subtle); border-radius: 6px; color: var(--text-primary); font-size: 14px; -webkit-appearance: none; -moz-appearance: textfield;">
                     </div>
                     
                     <div style="margin-bottom: 12px;">
