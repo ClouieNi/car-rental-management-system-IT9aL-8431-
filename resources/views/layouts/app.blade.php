@@ -76,6 +76,12 @@
                         <span class="ml-auto bg-gold text-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">{{ $myUnread }}</span>
                     @endif
                 </a>
+
+                <div class="px-5 py-2 mt-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Settings</div>
+                <a href="{{ route('customer.profile') }}"
+                   class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('customer.profile') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+                    <i class="bi bi-person text-base w-5"></i> Profile
+                </a>
             @else
                 {{-- ADMIN NAVIGATION --}}
                 <div class="px-5 py-2 text-[10px] font-semibold text-gray-600 uppercase tracking-widest">Overview</div>
@@ -141,17 +147,10 @@
         <!-- User Card -->
         <div class="p-5 border-t border-white/5">
             <div class="flex items-center justify-between p-2.5 bg-dark-200 rounded-md border border-white/5">
-                @if(auth()->user()->role === 'customer')
-                    <a href="{{ route('customer.profile') }}" class="min-w-0 group flex-1 hover:opacity-80 transition-opacity">
-                        <div class="text-[13px] font-semibold text-cream truncate group-hover:text-gold transition-colors">{{ auth()->user()->name }}</div>
-                        <div class="text-[10px] text-gold uppercase tracking-wider">{{ auth()->user()->role }}</div>
-                    </a>
-                @else
-                    <div class="min-w-0">
-                        <div class="text-[13px] font-semibold text-cream truncate">{{ auth()->user()->name }}</div>
-                        <div class="text-[10px] text-gold uppercase tracking-wider">{{ auth()->user()->role }}</div>
-                    </div>
-                @endif
+                <div class="min-w-0">
+                    <div class="text-[13px] font-semibold text-cream truncate">{{ auth()->user()->name }}</div>
+                    <div class="text-[10px] text-gold uppercase tracking-wider">{{ auth()->user()->role }}</div>
+                </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="text-gray-500 hover:text-red-500 transition-colors p-1" title="Logout">
@@ -171,19 +170,6 @@
             </button>
             
             
-            <div class="flex items-center gap-2.5 ml-auto">
-                @auth
-                    @if(auth()->user()->role === 'customer')
-                        <a href="{{ route('customer.profile') }}" class="flex items-center justify-center w-9 h-9 border border-white/10 rounded-md text-cream hover:bg-gold/10 hover:text-gold transition-colors" title="My Profile">
-                            <i class="bi bi-person-circle text-lg"></i>
-                        </a>
-                    @else
-                        <a href="{{ route('profile.edit') }}" class="flex items-center justify-center w-9 h-9 border border-white/10 rounded-md text-cream hover:bg-gold/10 hover:text-gold transition-colors" title="My Profile">
-                            <i class="bi bi-person-circle text-lg"></i>
-                        </a>
-                    @endif
-                @endauth
-            </div>
         </header>
 
         <!-- Page Body -->
