@@ -38,8 +38,8 @@
         </div>
 
         <div class="mb-4 p-3 bg-gold/10 border border-gold/30 rounded">
-            <div class="text-sm text-gold font-medium mb-1">{{ __('Security Question:') }}</div>
-            <div class="text-cream">{{ $question }}</div>
+            <div class="text-sm text-gold font-medium mb-1">{{ __('Your Security Question:') }}</div>
+            <div class="text-cream font-medium">{{ $question }}</div>
         </div>
 
         <form method="POST" action="{{ route('password.verify') }}">

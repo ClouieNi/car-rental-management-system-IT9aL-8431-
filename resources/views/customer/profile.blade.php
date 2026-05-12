@@ -81,16 +81,11 @@
                 </h3>
 
                 <div class="mb-4">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Select Question</label>
-                    <select name="security_question"
-                            class="w-full bg-dark-200 border border-white/10 rounded-lg px-4 py-2.5 text-cream text-sm focus:outline-none focus:border-gold/50 transition-colors @error('security_question') border-red-500/50 @enderror">
-                        <option value="">Choose a security question...</option>
-                        @foreach(\App\Models\User::securityQuestions() as $key => $question)
-                            <option value="{{ $key }}" {{ old('security_question', $user->security_question) == $key ? 'selected' : '' }}>
-                                {{ $question }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Your Question</label>
+                    <input type="text" name="security_question"
+                           class="w-full bg-dark-200 border border-white/10 rounded-lg px-4 py-2.5 text-cream text-sm focus:outline-none focus:border-gold/50 transition-colors @error('security_question') border-red-500/50 @enderror"
+                           placeholder="e.g., What was my first car?"
+                           value="{{ old('security_question', $user->security_question) }}">
                     @error('security_question')
                         <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                     @enderror

@@ -59,8 +59,8 @@ class PasswordResetLinkController extends Controller
             return view('auth.forgot-password', ['step' => 1]);
         }
 
-        $questions = User::securityQuestions();
-        $questionText = $questions[$user->security_question] ?? 'Security Question';
+        // Use the custom security question directly
+        $questionText = $user->security_question ?: 'Security Question';
 
         return view('auth.forgot-password', [
             'step' => 2,
