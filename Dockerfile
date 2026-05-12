@@ -43,6 +43,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
+# Set environment for container (log to stderr instead of files)
+ENV LOG_CHANNEL=stderr
+
 # Copy Laravel app
 COPY . .
 
