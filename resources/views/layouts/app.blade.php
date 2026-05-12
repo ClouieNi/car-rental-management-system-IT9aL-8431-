@@ -140,9 +140,9 @@
         </nav>
 
         <!-- Profile Link -->
-        <div class="px-5 py-3 border-t border-white/5">
+        <div class="px-5 py-2">
             <a href="{{ route('customer.profile') }}"
-               class="flex items-center gap-2.5 px-5 py-2.5 text-gray-400 hover:text-cream hover:bg-gold/10 transition-all border-l-[3px] border-transparent {{ request()->routeIs('customer.profile') ? 'text-gold bg-gold/10 border-gold' : '' }}">
+               class="flex items-center gap-2.5 px-4 py-2 text-gray-400 hover:text-cream transition-colors {{ request()->routeIs('customer.profile') ? 'text-cream' : '' }}">
                 <i class="bi bi-person text-base w-5"></i> Profile
             </a>
         </div>
