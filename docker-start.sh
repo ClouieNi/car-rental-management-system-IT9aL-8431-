@@ -7,5 +7,8 @@ mkdir -p storage/framework/cache storage/framework/sessions \
 # Make storage writable for all (Render uses different UIDs)
 chmod -R 777 storage bootstrap/cache
 
+# Run database migrations
+php artisan migrate --force
+
 # Start Apache
 apache2-foreground
