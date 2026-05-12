@@ -249,7 +249,9 @@ class CustomerController extends Controller
             'current_password'      => 'nullable|string',
             'password'              => ['nullable', 'confirmed', Password::min(8)],
             'security_question'     => 'nullable|string',
-            'security_answer'       => 'nullable|string|min:2',
+            'security_answer'       => 'required_with:security_question|string|min:2',
+        ], [
+            'security_answer.required_with' => 'Please provide an answer for your security question.',
         ]);
 
         // If user wants to change password, verify current password

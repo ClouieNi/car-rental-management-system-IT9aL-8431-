@@ -97,16 +97,19 @@
                 </div>
 
                 <div class="mb-5">
-                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Your Answer</label>
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Your Answer <span class="text-gold">*</span></label>
                     <input type="text" name="security_answer"
                            class="w-full bg-dark-200 border border-white/10 rounded-lg px-4 py-2.5 text-cream text-sm focus:outline-none focus:border-gold/50 transition-colors @error('security_answer') border-red-500/50 @enderror"
                            placeholder="Enter your answer (case-insensitive)"
-                           value="{{ old('security_answer') }}">
+                           value="{{ old('security_answer') }}"
+                           @if(!$user->security_question) required @endif>
                     @if($user->security_question)
                         <p class="text-gray-500 text-xs mt-1">Leave blank to keep existing answer</p>
+                    @else
+                        <p class="text-gold/70 text-xs mt-1"><i class="bi bi-exclamation-circle mr-1"></i> Required - please set up for password recovery</p>
                     @endif
                     @error('security_answer')
-                        <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                        <p class="text-red-400 text-xs mt-1"><i class="bi bi-exclamation-triangle mr-1"></i> {{ $message }}</p>
                     @enderror
                 </div>
             </div>
