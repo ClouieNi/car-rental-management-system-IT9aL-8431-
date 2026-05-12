@@ -19,15 +19,19 @@ Route::middleware('guest')->group(function () {
          ->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
+    // Security Question Password Reset Routes
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
          ->name('password.request');
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'findUser'])
          ->name('password.email');
-
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-         ->name('password.reset');
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
-         ->name('password.store');
+    Route::get('security-question', [PasswordResetLinkController::class, 'showQuestion'])
+         ->name('password.question');
+    Route::post('security-question', [PasswordResetLinkController::class, 'verifyAnswer'])
+         ->name('password.verify');
+    Route::get('reset-password', [PasswordResetLinkController::class, 'showResetForm'])
+         ->name('password.reset.form');
+    Route::post('reset-password', [PasswordResetLinkController::class, 'resetPassword'])
+         ->name('password.reset.store');
 });
 
 Route::middleware('auth')->group(function () {

@@ -248,6 +248,8 @@ class CustomerController extends Controller
             'email'                 => 'required|email|max:255|unique:users,email,' . $user->id,
             'current_password'      => 'nullable|string',
             'password'              => ['nullable', 'confirmed', Password::min(8)],
+            'security_question'     => 'nullable|string',
+            'security_answer'       => 'nullable|string|min:2',
         ]);
 
         // If user wants to change password, verify current password
@@ -262,6 +264,16 @@ class CustomerController extends Controller
 
         if (!empty($data['password'])) {
             $user->password = Hash::make($data['password']);
+        }
+
+        // Update security question if provided
+        if (!empty($data['security_question'])) {
+            $user->security_question = $data['security_question'];
+            
+            // Only update answer if a new one is provided
+            if (!empty($data['security_answer'])) {
+                $user->security_answer_hash = password_hash(strtolower(trim($data['security_answer'])), PASSWORD_DEFAULT);
+            }
         }
 
         $user->save();

@@ -23,7 +23,31 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'security_question',
+        'security_answer_hash',
     ];
+
+    /**
+     * Preset security questions
+     */
+    public static function securityQuestions(): array
+    {
+        return [
+            'mother_maiden' => "What is your mother's maiden name?",
+            'first_pet' => "What was the name of your first pet?",
+            'birth_city' => "What city were you born in?",
+            'favorite_food' => "What is your favorite food?",
+            'elementary_school' => "What was the name of your elementary school?",
+        ];
+    }
+
+    /**
+     * Verify security answer
+     */
+    public function verifySecurityAnswer(string $answer): bool
+    {
+        return $this->security_answer_hash && password_verify(strtolower(trim($answer)), $this->security_answer_hash);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

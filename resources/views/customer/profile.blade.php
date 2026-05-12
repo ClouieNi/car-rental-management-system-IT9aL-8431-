@@ -74,6 +74,43 @@
                 </div>
             </div>
 
+            <div class="border-t border-white/10 pt-5 mb-4">
+                <h3 class="text-sm font-semibold text-cream mb-4 flex items-center gap-2">
+                    <i class="bi bi-shield-check text-gold"></i> Security Question
+                    <span class="text-xs text-gray-500 font-normal">(for password recovery)</span>
+                </h3>
+
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Select Question</label>
+                    <select name="security_question"
+                            class="w-full bg-dark-200 border border-white/10 rounded-lg px-4 py-2.5 text-cream text-sm focus:outline-none focus:border-gold/50 transition-colors @error('security_question') border-red-500/50 @enderror">
+                        <option value="">Choose a security question...</option>
+                        @foreach(\App\Models\User::securityQuestions() as $key => $question)
+                            <option value="{{ $key }}" {{ old('security_question', $user->security_question) == $key ? 'selected' : '' }}>
+                                {{ $question }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('security_question')
+                        <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Your Answer</label>
+                    <input type="text" name="security_answer"
+                           class="w-full bg-dark-200 border border-white/10 rounded-lg px-4 py-2.5 text-cream text-sm focus:outline-none focus:border-gold/50 transition-colors @error('security_answer') border-red-500/50 @enderror"
+                           placeholder="Enter your answer (case-insensitive)"
+                           value="{{ old('security_answer') }}">
+                    @if($user->security_question)
+                        <p class="text-gray-500 text-xs mt-1">Leave blank to keep existing answer</p>
+                    @endif
+                    @error('security_answer')
+                        <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
             <div class="flex items-center justify-between">
                 <a href="{{ route('customer.dashboard') }}" class="text-sm text-gray-400 hover:text-cream transition-colors">
                     <i class="bi bi-arrow-left mr-1"></i> Back to Dashboard
